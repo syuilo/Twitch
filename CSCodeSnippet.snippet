@@ -1,0 +1,28 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CodeSnippets
+    xmlns="http://schemas.microsoft.com/VisualStudio/2005/CodeSnippet">
+	<CodeSnippet Format="1.0.0">
+		<Header>
+			<Title>イベント</Title>
+			<Shortcut>ev</Shortcut>
+		</Header>
+		<Snippet>
+			<Declarations>
+				<Literal>
+					<ID>name</ID>
+					<Default>name</Default>
+				</Literal>
+			</Declarations>
+			<Code Language="CSharp">
+				#region $name$Event
+				public delegate void $name$EventHandler();
+
+				/// &lt;summary&gt;
+				///
+				/// &lt;/summary&gt;
+				public event $name$EventHandler $name$;
+				#endregion
+			</Code>
+		</Snippet>
+	</CodeSnippet>
+</CodeSnippets>

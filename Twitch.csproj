@@ -1,0 +1,171 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{0F7C1147-CC1A-41A7-BD48-A6F6CCF258C4}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Twitch</RootNamespace>
+    <AssemblyName>Twitch</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>3</WarningLevel>
+    <DocumentationFile>bin\Debug\Twitch.XML</DocumentationFile>
+    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\Release\Twitch.XML</DocumentationFile>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>false</SignAssembly>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>favicon.ico</ApplicationIcon>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="CannotGuarantee.cs" />
+    <Compile Include="Filter\FilterBase.cs" />
+    <Compile Include="Filter\Filters\Text\FilterText.cs" />
+    <Compile Include="Filter\Filters\Text\TextFilterBase.cs" />
+    <Compile Include="Filter\IFilter.cs" />
+    <Compile Include="HTTP\Twitter\Core\Core.cs" />
+    <Compile Include="HTTP\Twitter\Core\Request.cs" />
+    <Compile Include="HTTP\Request.cs" />
+    <Compile Include="HTTP\TwitterRequest.cs" />
+    <Compile Include="Streaming\EventArgses\DisconnectedEventArgs.cs" />
+    <Compile Include="Streaming\EventArgses\FriendsListsEventArgs.cs" />
+    <Compile Include="Streaming\IStream.cs" />
+    <Compile Include="Streaming\EventArgses\StatusDeletionEventArgs.cs" />
+    <Compile Include="Streaming\EventArgses\StatusUpdatedEventArgs.cs" />
+    <Compile Include="Streaming\PublicStream.cs" />
+    <Compile Include="Streaming\EventArgses\StreamEventArgs.cs" />
+    <Compile Include="Streaming\EventArgses\StreamEventEventArgs.cs" />
+    <Compile Include="Streaming\UserStream.cs" />
+    <Compile Include="twitch.cs" />
+    <Compile Include="Twitter\API.cs" />
+    <Compile Include="Twitter\APIs\REST\Account.cs" />
+    <Compile Include="Twitter\APIs\REST\Blocks.cs" />
+    <Compile Include="Twitter\APIs\REST\DirectMessages.cs" />
+    <Compile Include="Twitter\APIs\REST\Favorites.cs" />
+    <Compile Include="Twitter\APIs\REST\Followers.cs" />
+    <Compile Include="Twitter\APIs\REST\Friends.cs" />
+    <Compile Include="Twitter\APIs\REST\Friendships.cs" />
+    <Compile Include="Twitter\APIs\REST\Geo.cs" />
+    <Compile Include="Twitter\APIs\REST\Help.cs" />
+    <Compile Include="Twitter\APIs\REST\Lists.cs" />
+    <Compile Include="Twitter\APIs\REST\OAuth.cs" />
+    <Compile Include="Twitter\APIs\REST\OAuth2.cs" />
+    <Compile Include="Twitter\APIs\REST\SavedSearches.cs" />
+    <Compile Include="Twitter\APIs\REST\Search.cs" />
+    <Compile Include="Twitter\APIs\REST\Statuses.cs" />
+    <Compile Include="Twitter\APIs\REST\Trends.cs" />
+    <Compile Include="Twitter\APIs\REST\Users.cs" />
+    <Compile Include="Twitter\APIs\Streaming\Streaming.cs" />
+    <Compile Include="Twitter\APIs\Unused.cs" />
+    <Compile Include="Twitter\Application\Key.cs" />
+    <Compile Include="Twitter\Application\OfficialKeys.cs" />
+    <Compile Include="Twitter\Response\Entities\Entities.cs" />
+    <Compile Include="Twitter\Response\Other\Annotations.cs" />
+    <Compile Include="Twitter\Response\Other\Geo.cs" />
+    <Compile Include="Twitter\Response\Entities\Hashtag.cs" />
+    <Compile Include="Twitter\Response\Entities\Media.cs" />
+    <Compile Include="Twitter\Response\Entities\Size.cs" />
+    <Compile Include="Twitter\Response\Entities\Sizes.cs" />
+    <Compile Include="Twitter\Response\Entities\URL.cs" />
+    <Compile Include="Twitter\Response\Entities\UserMentions.cs" />
+    <Compile Include="Twitter\Response\Places\BoundingBox.cs" />
+    <Compile Include="Twitter\Response\Places\Places.cs" />
+    <Compile Include="Twitter\Response\Tweets\Contributors.cs" />
+    <Compile Include="Twitter\Response\Tweets\Coordinates.cs" />
+    <Compile Include="Twitter\Status.cs" />
+    <Compile Include="Twitter\APIs\UnOfficial.cs" />
+    <Compile Include="Twitter\User.cs" />
+    <Compile Include="Utility\AnalyzeUrlQuery.cs" />
+    <Compile Include="Utility\Image\Convert.cs" />
+    <Compile Include="Utility\JSON\DynamicJson.cs" />
+    <Compile Include="HTTP\Twitter\OAuth\OAuthCore.cs" />
+    <Compile Include="Utility\JSON\JsonParser.cs" />
+    <Compile Include="Streaming\oldStream.cs" />
+    <Compile Include="TwitterContext.cs" />
+    <Compile Include="HTTP\Twitter\OAuth\OAuthBase.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Streaming\oldUserStream.cs" />
+    <Compile Include="Twitter\Response\Tweets\Status.cs" />
+    <Compile Include="Twitter\Common\TwitterResponse.cs" />
+    <Compile Include="Twitter\Response\Users\User.cs" />
+    <Compile Include="Utility\Twitter\Authorize.cs" />
+    <Compile Include="Utility\Twitter\Image.cs" />
+    <Compile Include="Vermillion\Utility\RandomString.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="favicon.ico">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="LICENSE.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Twitch.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="UpdateLog.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Filter\Core\" />
+    <Folder Include="Twitter\APIs\Streaming\Public\" />
+    <Folder Include="Twitter\APIs\Streaming\Site\" />
+    <Folder Include="Twitter\APIs\Streaming\User\" />
+    <Folder Include="Twitter\APIs\UnOfficial\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\..\Code Snippets\Visual C#\My Code Snippets\CSCodeSnippet.snippet">
+      <Link>CSCodeSnippet.snippet</Link>
+    </None>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PreBuildEvent>
+    </PreBuildEvent>
+  </PropertyGroup>
+  <PropertyGroup>
+    <PostBuildEvent>
+    </PostBuildEvent>
+  </PropertyGroup>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
