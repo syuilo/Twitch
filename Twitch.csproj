@@ -133,6 +133,9 @@
     <Content Include="LICENSE.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="README.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Twitch.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
