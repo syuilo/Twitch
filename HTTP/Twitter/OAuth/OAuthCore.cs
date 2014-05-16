@@ -99,7 +99,7 @@ namespace Twitch.HTTP.Twitter.OAuth
 			Console.WriteLine("-\t-\t## シグネチャを生成します");
 #endif
 
-			SortedDictionary<string, string> Parameters = new SortedDictionary<string, string>();
+			var Parameters = new SortedDictionary<string, string>();
 
 			Parameters.Add("oauth_consumer_key", Context.ConsumerKey);
 			Parameters.Add("oauth_nonce", Nonce);
@@ -188,7 +188,7 @@ namespace Twitch.HTTP.Twitter.OAuth
 		{
 			string unreservedChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-_.~";
 
-			StringBuilder result = new StringBuilder();
+			var result = new StringBuilder();
 			byte[] data = encode.GetBytes(value);
 			int len = data.Length;
 

@@ -125,6 +125,7 @@
     <Compile Include="Utility\Twitter\Authorize.cs" />
     <Compile Include="Utility\Twitter\Image.cs" />
     <Compile Include="Vermillion\Utility\RandomString.cs" />
+    <Compile Include="Vermillion\Utility\RandomText.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="favicon.ico">

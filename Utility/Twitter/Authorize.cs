@@ -116,40 +116,50 @@ namespace Twitch.Utility.Twitter
 		public async Task<TwitterContext> GetAccessTokenFromScreenNameAndPassword(
 			string ScreenName, string Password)
 		{
-			System.Net.WebClient wc = new System.Net.WebClient();
-			string sorce = wc.DownloadString("https://twitter.com");
-			wc.Dispose();
+			if (this.OAuthToken == null)
+				throw new NullReferenceException("リクエスト トークンが設定されていません。");
 
-			Regex reg = new Regex("<input type=\"hidden\" name=\"authenticity_token\" value=\"(?<token>.*?)\">",
-							RegexOptions.IgnoreCase | RegexOptions.Singleline);
+			try
+			{
+				var wc = new System.Net.WebClient();
+				string sorce = wc.DownloadString("https://twitter.com");
+				wc.Dispose();
 
-			Match m = reg.Match(sorce);
-			Console.WriteLine("authenticity_token: " + m.Groups["token"].Value);
+				Regex reg = new Regex("<input type=\"hidden\" name=\"authenticity_token\" value=\"(?<token>.*?)\">",
+								RegexOptions.IgnoreCase | RegexOptions.Singleline);
 
-			string url = "https://api.twitter.com/oauth/authorize";
+				Match m = reg.Match(sorce);
+				System.Diagnostics.Debug.WriteLine("authenticity_token: " + m.Groups["token"].Value);
 
-			wc = new System.Net.WebClient();
+				string url = "https://api.twitter.com/oauth/authorize";
 
-			System.Collections.Specialized.NameValueCollection ps =
-				new System.Collections.Specialized.NameValueCollection();
+				wc = new System.Net.WebClient();
 
-			ps.Add("authenticity_token", m.Groups["token"].Value);
-			ps.Add("oauth_token", OAuthToken);
-			ps.Add("session[username_or_email]", ScreenName);
-			ps.Add("session[password]", Password);
+				System.Collections.Specialized.NameValueCollection ps =
+					new System.Collections.Specialized.NameValueCollection();
 
-			byte[] resData = wc.UploadValues(url, ps);
-			wc.Dispose();
+				ps.Add("authenticity_token", m.Groups["token"].Value);
+				ps.Add("oauth_token", OAuthToken);
+				ps.Add("session[username_or_email]", ScreenName);
+				ps.Add("session[password]", Password);
 
-			string resText = System.Text.Encoding.UTF8.GetString(resData);
+				byte[] resData = wc.UploadValues(url, ps);
+				wc.Dispose();
 
-			reg = new Regex("<code>(?<pin>.*?)</code>",
-				RegexOptions.IgnoreCase | RegexOptions.Singleline);
+				string resText = System.Text.Encoding.UTF8.GetString(resData);
 
-			m = reg.Match(resText);
-			Console.WriteLine("pin: " + m.Groups["pin"].Value);
+				reg = new Regex("<code>(?<pin>.*?)</code>",
+					RegexOptions.IgnoreCase | RegexOptions.Singleline);
 
-			return await GetAccessTokenFromPinCode(m.Groups["pin"].Value);
+				m = reg.Match(resText);
+				System.Diagnostics.Debug.WriteLine("pin: " + m.Groups["pin"].Value);
+
+				return await GetAccessTokenFromPinCode(m.Groups["pin"].Value);
+			}
+			catch (Exception e)
+			{
+				return null;
+			}
 		}
 
 		/// <summary>

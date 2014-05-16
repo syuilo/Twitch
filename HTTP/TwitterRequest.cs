@@ -120,7 +120,7 @@ namespace Twitch.HTTP.Twitter
 			}
 
 			// リクエストの作成
-			HttpWebRequest Request = (HttpWebRequest)WebRequest.Create(url);
+			var Request = (HttpWebRequest)WebRequest.Create(url);
 
 			if (this.Proxy != null)
 				Request.Proxy = new WebProxy(this.Proxy);
@@ -146,7 +146,7 @@ namespace Twitch.HTTP.Twitter
 			try
 			{
 				// リクエストの送信
-				HttpWebResponse Response = (HttpWebResponse)await Request.GetResponseAsync();
+				var Response = (HttpWebResponse)await Request.GetResponseAsync();
 
 				using (StreamReader ResponseDataStream = new StreamReader(Response.GetResponseStream()))
 				{
