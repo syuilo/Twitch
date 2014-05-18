@@ -32,7 +32,7 @@ namespace Twitch.Twitter.Response.Tweets
 			this.IsPossiblySensitive = (this.Json.IsDefined("possibly_sensitive")) ? this.Json["possibly_sensitive"] : null;
 			this.InReplyToUserID = (Int64?)this.Json["in_reply_to_user_id"];
 			this.Place = (this.Json["place"] != null) ? new Places.Places(this.Json["place"].ToString()) : null;
-			this.User = (this.Json.IsDefined("user")) ? new Users.User(this.Json["user"].ToString()) : null;
+			this.User = (this.Json.IsDefined("user")) ? new Twitter.User(this.Json["user"].ToString()) : null;
 			this.InReplyToScreenName = this.Json["in_reply_to_screen_name"];
 			this.Source = this.Json["source"];
 			this.InReplyToStatusID = this.Json["in_reply_to_status_id"];
@@ -197,7 +197,7 @@ namespace Twitch.Twitter.Response.Tweets
 		/// <summary>
 		/// ツイートを作成したユーザー
 		/// </summary>
-		public Users.User User
+		public Twitter.User User
 		{
 			get;
 			private set;

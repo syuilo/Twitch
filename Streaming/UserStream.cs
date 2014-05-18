@@ -586,14 +586,11 @@ namespace Twitch.Streaming
 			// Status
 			else
 			{
+				Twitter.Status status;
+
 				try
 				{
-					this.OnStatusUpdated(
-						new StatusUpdatedEventArgs
-						{
-							Status = new Twitter.Status(json.ToString())
-						}
-					);
+					status = new Twitter.Status(json.ToString());
 				}
 				catch
 				{
@@ -601,7 +598,15 @@ namespace Twitch.Streaming
 						throw new ApplicationException(
 							"不明なメッセージが発行されました。\"" + json.ToString() + "\"" + Environment.NewLine +
 							"この種の予期しないメッセージに対して例外を発生させない場合は、このStreamの IsTolerance プロパティを true に設定してください。");
+					return;
 				}
+
+				this.OnStatusUpdated(
+					new StatusUpdatedEventArgs
+					{
+						Status = status
+					}
+				);
 			}
 
 			#endregion

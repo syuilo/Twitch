@@ -14,6 +14,23 @@ namespace Twitch.Twitter
 		public User(string json)
 			: base(json) { }
 
+
+		/// <summary>
+		/// @を含むScreenNameを取得します。
+		/// </summary>
+		public string DisplayScreenName
+		{
+			get
+			{
+				return '@' + this.ScreenName;
+			}
+			private set
+			{
+				this.DisplayScreenName = value;
+			}
+		}
+
+
 		/// <summary>
 		/// フォローします。
 		/// </summary>
