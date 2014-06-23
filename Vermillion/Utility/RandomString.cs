@@ -19,5 +19,18 @@ namespace Twitch.Vermillion.Utility
 			dynamic json = Twitch.Utility.DynamicJson.Parse(strJson);
 			return json.query.random[0].title;
 		}
+
+		public static string GetRandomString(int length, string chars, int seed = 0)
+		{
+			string str = string.Empty;
+			Random r = new System.Random(seed + System.Environment.TickCount);
+
+			for (int i = 0; i < length; i++)
+			{
+				str += chars[r.Next(chars.Length)];
+			}
+
+			return str;
+		}
 	}
 }

@@ -8,6 +8,9 @@ using Twitch.HTTP.Twitter;
 
 namespace Twitch.Twitter.APIs.REST
 {
+    /// <summary>
+    /// OAuthに関するAPI
+    /// </summary>
 	public static class OAuth
 	{
 		//namespace Utility
@@ -34,7 +37,7 @@ namespace Twitch.Twitter.APIs.REST
 
 		public static async Task<string> authorize(TwitterContext twitterContext)
 		{
-			return await new TwitterRequest(twitterContext, HTTP.Request.Method.GET, "https://api.twitter.com/oauth/authorize").Request();
+            return await new TwitterRequest(twitterContext, API.Methods.GET, new Uri(API.Urls.Oauth_Authorize)).Request();
 		}
 
 		public static async Task<string> access_token(TwitterContext twitterContext, string oauth_verifier)
@@ -42,12 +45,12 @@ namespace Twitch.Twitter.APIs.REST
 			StringDictionary query = new StringDictionary();
 			query["oauth_verifier"] = oauth_verifier;
 
-			return await new TwitterRequest(twitterContext, HTTP.Request.Method.POST, "https://api.twitter.com/oauth/access_token", query).Request();
+            return await new TwitterRequest(twitterContext, API.Methods.POST, new Uri(API.Urls.Oauth_AccessToken), query).Request();
 		}
 
 		public static async Task<string> request_token(TwitterContext twitterContext)
 		{
-			return await new TwitterRequest(twitterContext, HTTP.Request.Method.POST, "https://api.twitter.com/oauth/request_token").Request();
+            return await new TwitterRequest(twitterContext, API.Methods.POST, new Uri(API.Urls.Oauth_RequestToken)).Request();
 		}
 	}
 }

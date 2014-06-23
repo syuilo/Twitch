@@ -1,172 +1,169 @@
 ﻿using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
-using Twitch.HTTP.Twitter.OAuth;
+using System.Diagnostics;
+
+using Twitch.Twitter.API;
 
 namespace Twitch.HTTP.Twitter
 {
-	/// <summary>
-	/// Twitterへのリクエストを作成します。
-	/// </summary>
-	public class TwitterRequest
-	{
-		/// <summary>
-		/// Twitterへのリクエストを作成します。
-		/// </summary>
-		/// <param name="twitterContext">リクエストを行うTwitterContext。</param>
-		/// <param name="method">APIのリクエストに使用するHTTPメソッド。</param>
-		/// <param name="url">APIのURL。</param>
-		/// <param name="query">リクエストのパラメータ。</param>
-		public TwitterRequest(
-			TwitterContext twitterContext = null,
-			HTTP.Request.Method method = HTTP.Request.Method.POST,
-			string url = null,
-			StringDictionary query = null,
-			string proxy = null)
-		{
-			this.TwitterContext = twitterContext;
-			this.Method = method;
-			this.Url = new Uri(url);
-			this.Parameter = query;
-			this.Proxy = proxy;
-		}
+    /// <summary>
+    /// Twitterへのリクエストを作成します。
+    /// </summary>
+    public class TwitterRequest
+    {
+        /// <summary>
+        /// Twitterへのリクエストを作成します。
+        /// </summary>
+        /// <param name="twitterContext">リクエストを行うTwitterContext。</param>
+        /// <param name="method">APIのリクエストに使用するHTTPメソッド。</param>
+        /// <param name="url">APIのURL。</param>
+        /// <param name="query">リクエストのパラメータ。</param>
+        public TwitterRequest(
+            TwitterContext twitterContext = null,
+            Methods method = Methods.POST,
+            Uri url = null,
+            StringDictionary query = null,
+            string proxy = null,
+            string userAgent = null)
+        {
+            this.TwitterContext = twitterContext;
+            this.Method = method;
+            this.Url = url;
+            this.Parameter = query;
+            this.Proxy = proxy;
+            this.UserAgent = userAgent;
+        }
 
-		/// <summary>
-		/// リクエストを行うTwitterContext。
-		/// </summary>
-		public TwitterContext TwitterContext
-		{
-			get;
-			set;
-		}
+        /// <summary>
+        /// リクエストを行うTwitterContext。
+        /// </summary>
+        public TwitterContext TwitterContext
+        {
+            get;
+            set;
+        }
 
-		/// <summary>
-		/// APIのリクエストに使用するHTTPメソッド。
-		/// 適当なメソッドについては各種APIドキュメントを参照してください。
-		/// </summary>
-		public HTTP.Request.Method Method
-		{
-			get;
-			set;
-		}
+        /// <summary>
+        /// APIのリクエストに使用するHTTPメソッド。
+        /// 適当なメソッドについては各種APIドキュメントを参照してください。
+        /// </summary>
+        public Methods Method
+        {
+            get;
+            set;
+        }
 
-		/// <summary>
-		/// APIのURL。
-		/// </summary>
-		public Uri Url
-		{
-			get;
-			set;
-		}
+        /// <summary>
+        /// APIのURL。
+        /// </summary>
+        public Uri Url
+        {
+            get;
+            set;
+        }
 
-		/// <summary>
-		/// リクエストのパラメータ。
-		/// </summary>
-		public StringDictionary Parameter
-		{
-			get;
-			set;
-		}
+        /// <summary>
+        /// リクエストのパラメータ。
+        /// </summary>
+        public StringDictionary Parameter
+        {
+            get;
+            set;
+        }
 
-		/// <summary>
-		/// リクエストに使用するプロキシ サーバー。
-		/// </summary>
-		public string Proxy
-		{
-			get;
-			set;
-		}
+        /// <summary>
+        /// リクエストに使用するプロキシ サーバー。
+        /// </summary>
+        public string Proxy
+        {
+            get;
+            set;
+        }
 
-		/// <summary>
-		/// リクエストを送信し、レスポンスを取得します。
-		/// </summary>
-		/// <returns></returns>
-		public async Task<string> Request()
-		{
-			string response = string.Empty;
-			string data = null;
+        public string UserAgent
+        {
+            get;
+            set;
+        }
 
-			string url = this.Url.ToString();
+        /// <summary>
+        /// 非同期でリクエストを送信し、レスポンスを取得します。
+        /// </summary>
+        /// <returns>レスポンス</returns>
+        public async Task<string> Request()
+        {
+            string response = string.Empty;
+            string data = null;
 
-#if DEBUG
-			Console.WriteLine("\r\n--------------------\r\n## リクエストを作成します > " + this.Method + " " + this.Url);
-#endif
-			if (this.Parameter != null)
-			{
-				// リクエストデータの作成
-				var para = from DictionaryEntry k in this.Parameter
-						   select (k.Value != null) ? OAuthCore.UrlEncode((string)k.Key, System.Text.Encoding.UTF8) + "=" + OAuthCore.UrlEncode((string)k.Value, System.Text.Encoding.UTF8) : null;
+            string url = this.Url.ToString();
 
-				data = String.Join("&", para.ToArray());
+            Debug.WriteLine("\r\n--------------------\r\n## リクエストを作成します > " + this.Method + " " + this.Url);
 
-#if DEBUG
-				if (data.Length > 1000)
-					Console.WriteLine("## リクエストデータ構築完了 : (1000文字以上)");
-				else
-					Console.WriteLine("## リクエストデータ構築完了 : " + data);
-#endif
-				if (Method == HTTP.Request.Method.GET)
-				{
-					// リクエストデータをURLクエリとして連結
-					url += '?' + data;
-					//QueryDictionary = null;
-				}
-			}
+            if (this.Parameter != null)
+            {
+                var para = from DictionaryEntry k in this.Parameter
+                           select (k.Value != null)
+                           ? OAuth.Core.UrlEncode((string)k.Key, Encoding.UTF8) + '=' + OAuth.Core.UrlEncode((string)k.Value, Encoding.UTF8)
+                           : null;
 
-			// リクエストの作成
-			var Request = (HttpWebRequest)WebRequest.Create(url);
+                data = String.Join("&", para.ToArray());
 
-			if (this.Proxy != null)
-				Request.Proxy = new WebProxy(this.Proxy);
+                Debug.WriteLine(data.Length > 1000 ? "## リクエストデータ構築完了 : (1000文字以上)" : "## リクエストデータ構築完了 : " + data);
 
-			Request.Method = Method.ToString();
-			Request.ContentType = "application/x-www-form-urlencoded";
-			Request.Host = "api.twitter.com";
-			Request.Headers["Authorization"] = OAuthCore.GenerateRequestHeader(this.TwitterContext, Method.ToString(), this.Url.ToString(), this.Parameter);
+                if (Method == Methods.GET)
+                    url += '?' + data;
+            }
 
-			if (Method == HTTP.Request.Method.POST && this.Parameter != null)
-			{
-				// リクエストデータの書き込み
-				using (StreamWriter streamWriter = new StreamWriter(await Request.GetRequestStreamAsync()))
-				{
-					await streamWriter.WriteAsync(data);
-				}
-			}
+            // Create request
+            var Request = (HttpWebRequest)WebRequest.Create(url);
 
-#if DEBUG
-			Console.WriteLine("## リクエストを送信します...");
-#endif
+            if (this.Proxy != null)
+                Request.Proxy = new WebProxy(this.Proxy);
 
-			try
-			{
-				// リクエストの送信
-				var Response = (HttpWebResponse)await Request.GetResponseAsync();
+            Request.Method = Method.ToString();
+            Request.ContentType = "application/x-www-form-urlencoded";
+            Request.Host = "api.twitter.com";
+            Request.Headers["Authorization"] =
+                OAuth.Core.GenerateRequestHeader(
+                    this.TwitterContext, Method.ToString(), this.Url.ToString(), this.Parameter);
 
-				using (StreamReader ResponseDataStream = new StreamReader(Response.GetResponseStream()))
-				{
-					response = await ResponseDataStream.ReadToEndAsync();
-				}
+            if (!String.IsNullOrEmpty(this.UserAgent))
+                Request.UserAgent = this.UserAgent;
 
-#if DEBUG
-				Console.WriteLine("## " + Response.StatusCode + " " + Response.StatusDescription + " : " + response + "\r\n--------------------");
-#endif
+            if (Method == Methods.POST && this.Parameter != null)
+            {
+                // Write request data
+                using (StreamWriter streamWriter = new StreamWriter(await Request.GetRequestStreamAsync()))
+                    await streamWriter.WriteAsync(data);
+            }
 
-				return response;
-			}
-			catch (System.Net.WebException ex)
-			{
-#if DEBUG
-				Console.WriteLine("## エラー : " + ex.Message + "\r\n--------------------");
-#endif
-				return null;
-			}
+            Debug.WriteLine("## リクエストを送信します...");
 
-		}
-	}
+            try
+            {
+                // Send request
+                var Response = (HttpWebResponse)await Request.GetResponseAsync();
+
+                // Read response
+                using (StreamReader ResponseDataStream = new StreamReader(Response.GetResponseStream()))
+                    response = await ResponseDataStream.ReadToEndAsync();
+
+                Debug.WriteLine("## " + Response.StatusCode + " " + Response.StatusDescription + " : " + response + "\r\n--------------------");
+
+                return response;
+            }
+            catch (System.Net.WebException ex)
+            {
+                Debug.WriteLine("## エラー : " + ex.Message + "\r\n--------------------");
+                return null;
+            }
+
+        }
+    }
 }

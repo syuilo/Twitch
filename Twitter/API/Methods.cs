@@ -4,14 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Twitch.HTTP
+namespace Twitch.Twitter.API
 {
-	public static class Request
-	{
-		public enum Method
-		{
-			GET,
-			POST,
-		}
-	}
+    public enum Methods
+    {
+        GET,
+        POST
+    }
 }

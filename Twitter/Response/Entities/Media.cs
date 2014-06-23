@@ -11,45 +11,24 @@ namespace Twitch.Twitter.Response.Entities
 	/// </summary>
 	public class Media : TwitterResponse
 	{
+		public Media()
+			: base() { }
+
 		public Media(string source)
 			: base(source)
 		{
-			dynamic json;
-
-			try
-			{
-				json = Utility.DynamicJson.Parse(source);
-			}
-			catch (Exception e)
-			{
-				throw new FormatException(
-					"Jsonの解析に失敗しました。Jsonの形式が正しくない可能性があります。" +
-					Environment.NewLine +
-					e.Message);
-			}
-
-			//try
-			//{
-				this.ExpandedUrl = new Uri(json["expanded_url"]);
-				this.Url = new Uri(json["url"]);
-				this.Indices = json["indices"];
-				this.DisplayUrl = json["display_url"];
-				this.ID = json["id"];
-				this.StringID = json["id_str"];
-				this.MediaUrl = new Uri(json["media_url"]);
-				this.MediaUrlHttps = new Uri(json["media_url_https"]);
-				this.Sizes = new Sizes(json["sizes"].ToString());
-				this.SourceStatusID = (json.IsDefined("source_status_id")) ? (Int64?)json["source_status_id"] : null;
-				this.SourceStatusStringID = (json.IsDefined("source_status_id_str")) ? json["source_status_id_str"] : null;
-				this.Type = json["type"];
-			//}
-			//catch (Exception e)
-			//{
-			//	throw new FormatException(
-			//		"初期化に失敗しました。Jsonの形式が正しくない可能性があります。" +
-			//		Environment.NewLine +
-			//		e.Message);
-			//}
+				this.ExpandedUrl = new Uri(this.Json["expanded_url"]);
+				this.Url = new Uri(this.Json["url"]);
+				this.Indices = this.Json["indices"];
+				this.DisplayUrl = this.Json["display_url"];
+				this.ID = this.Json["id"];
+				this.StringID = this.Json["id_str"];
+				this.MediaUrl = new Uri(this.Json["media_url"]);
+				this.MediaUrlHttps = new Uri(this.Json["media_url_https"]);
+				this.Sizes = new Sizes(this.Json["sizes"].ToString());
+				this.SourceStatusID = (this.Json.IsDefined("source_status_id")) ? (Int64?)this.Json["source_status_id"] : null;
+				this.SourceStatusStringID = (this.Json.IsDefined("source_status_id_str")) ? this.Json["source_status_id_str"] : null;
+				this.Type = this.Json["type"];
 		}
 
 		/// <summary>

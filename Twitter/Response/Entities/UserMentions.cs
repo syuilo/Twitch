@@ -11,6 +11,9 @@ namespace Twitch.Twitter.Response.Entities
 	/// </summary>
 	public class UserMentions : TwitterResponse
 	{
+		public UserMentions()
+			: base() { }
+
 		public UserMentions(string source)
 			: base(source)
 		{

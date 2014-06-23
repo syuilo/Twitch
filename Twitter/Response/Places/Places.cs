@@ -8,6 +8,9 @@ namespace Twitch.Twitter.Response.Places
 {
 	public class Places : TwitterResponse
 	{
+		public Places()
+			: base() { }
+
 		public Places(string source)
 			: base(source)
 		{

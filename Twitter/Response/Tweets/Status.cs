@@ -13,6 +13,9 @@ namespace Twitch.Twitter.Response.Tweets
 	/// </summary>
 	public class Status : TwitterResponse
 	{
+		public Status()
+			: base() { }
+
 		public Status(string source)
 			: base(source)
 		{
@@ -58,7 +61,7 @@ namespace Twitch.Twitter.Response.Tweets
 		}
 
 		/// <summary>
-		/// 緯度・経度
+		/// 緯度・経度を取得します。
 		/// </summary>
 		public Coordinates Coordinates
 		{
@@ -67,7 +70,7 @@ namespace Twitch.Twitter.Response.Tweets
 		}
 
 		/// <summary>
-		/// お気に入りに登録しているかどうか
+		/// お気に入りに登録しているかどうかを表す System.Boolean 値を取得します。
 		/// </summary>
 		public bool IsFavorited
 		{
@@ -85,7 +88,7 @@ namespace Twitch.Twitter.Response.Tweets
 		}
 
 		/// <summary>
-		/// 投稿日時
+		/// 投稿日時を取得します。
 		/// </summary>
 		public string CreatedAt
 		{
@@ -94,7 +97,7 @@ namespace Twitch.Twitter.Response.Tweets
 		}
 
 		/// <summary>
-		/// ツイートID
+		/// ツイートID(String)を取得します。
 		/// </summary>
 		public string StringID
 		{
@@ -112,7 +115,7 @@ namespace Twitch.Twitter.Response.Tweets
 		}
 
 		/// <summary>
-		/// ツイート本文
+		/// ツイート本文を取得します。
 		/// </summary>
 		public string Text
 		{
@@ -121,7 +124,7 @@ namespace Twitch.Twitter.Response.Tweets
 		}
 
 		/// <summary>
-		/// リツイートされた数
+		/// リツイートされた数を取得します。
 		/// </summary>
 		public double RetweetCount
 		{
@@ -130,8 +133,8 @@ namespace Twitch.Twitter.Response.Tweets
 		}
 
 		/// <summary>
-		/// 返信元になるツイートのID
-		/// (このツイートが返信ではない場合はNull)
+		/// 返信元になるツイートのIDを取得します。<para />
+		/// このツイートが返信ではない場合は Null を返します。
 		/// </summary>
 		public string InReplyToStatusIDstr
 		{
@@ -140,7 +143,7 @@ namespace Twitch.Twitter.Response.Tweets
 		}
 
 		/// <summary>
-		/// ツイートID
+		/// ツイートID(Int64)を取得します。
 		/// </summary>
 		public Int64 ID
 		{
@@ -149,7 +152,7 @@ namespace Twitch.Twitter.Response.Tweets
 		}
 
 		/// <summary>
-		/// 位置情報
+		/// 位置情報を取得します。
 		/// </summary>
 		public Geo Geo
 		{
@@ -158,7 +161,7 @@ namespace Twitch.Twitter.Response.Tweets
 		}
 
 		/// <summary>
-		/// リツイートしているか
+		/// リツイートしているかどうかを表す System.Boolean 値を取得します。
 		/// </summary>
 		public bool IsRetweeted
 		{
@@ -195,7 +198,7 @@ namespace Twitch.Twitter.Response.Tweets
 		}
 
 		/// <summary>
-		/// ツイートを作成したユーザー
+		/// ツイートを作成したユーザーを取得します。
 		/// </summary>
 		public Twitter.User User
 		{

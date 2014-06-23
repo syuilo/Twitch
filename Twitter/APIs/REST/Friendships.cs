@@ -9,49 +9,49 @@ using Twitch.HTTP.Twitter;
 
 namespace Twitch.Twitter.APIs.REST
 {
-	/// <summary>
-	/// 
-	/// </summary>
-	public static class Friendships
-	{
-		/// <summary>
-		/// 指定ユーザーをフォローします。
-		/// </summary>
-		/// <param name="twitterContext"></param>
-		/// <param name="screen_name"></param>
-		/// <param name="id"></param>
-		/// <param name="follow"></param>
-		/// <returns>指定ユーザーの Twitch.User オブジェクト</returns>
-		public static async Task<Twitter.User> Create(TwitterContext twitterContext, string screen_name = null, string id = null, bool follow = false)
-		{
-			StringDictionary query = new StringDictionary();
-			query["screen_name"] = screen_name;
-			query["user_id"] = id;
-			query["follow"] = follow.ToString();
+    /// <summary>
+    /// ユーザーのフォローに関するAPI
+    /// </summary>
+    public static class Friendships
+    {
+        /// <summary>
+        /// 指定したユーザーをフォローします。
+        /// </summary>
+        /// <param name="twitterContext">自分。</param>
+        /// <param name="screen_name">フォローするユーザーのScreenName。</param>
+        /// <param name="id">フォローするユーザーのID。</param>
+        /// <param name="follow">このユーザーからの通知を受け取るかどうかを示す System.Boolean 値。</param>
+        /// <returns>フォローされたユーザー</returns>
+        public static async Task<Twitter.User> Create(TwitterContext twitterContext, string screen_name = null, string id = null, bool follow = false)
+        {
+            StringDictionary query = new StringDictionary();
+            query["screen_name"] = screen_name;
+            query["user_id"] = id;
+            query["follow"] = follow.ToString();
 
-			return new Twitter.User(
-				await new TwitterRequest(
-					twitterContext, HTTP.Request.Method.POST,
-					"https://api.twitter.com/1.1/friendships/create.json", query).Request());
-		}
+            return new Twitter.User(
+                await new TwitterRequest(
+                    twitterContext, API.Methods.POST,
+                    new Uri(API.Urls.Friendships_Create), query).Request());
+        }
 
-		/// <summary>
-		/// 指定ユーザーのフォローを解除します。
-		/// </summary>
-		/// <param name="twitterContext"></param>
-		/// <param name="screen_name"></param>
-		/// <param name="id"></param>
-		/// <returns>指定ユーザーの Twitch.User オブジェクト</returns>
-		public static async Task<Twitter.User> Destory(TwitterContext twitterContext, string screen_name = null, string id = null)
-		{
-			StringDictionary query = new StringDictionary();
-			query["screen_name"] = screen_name;
-			query["user_id"] = id;
+        /// <summary>
+        /// 指定したユーザーのフォローを解除します。
+        /// </summary>
+        /// <param name="twitterContext">自分。</param>
+        /// <param name="screen_name">フォローを解除するユーザーのScreenName。</param>
+        /// <param name="id">フォローを解除するユーザーのID。</param>
+        /// <returns>フォローを解除されたユーザー</returns>
+        public static async Task<Twitter.User> Destory(TwitterContext twitterContext, string screen_name = null, string id = null)
+        {
+            StringDictionary query = new StringDictionary();
+            query["screen_name"] = screen_name;
+            query["user_id"] = id;
 
-			return new Twitter.User(
-				await new TwitterRequest(
-					twitterContext, HTTP.Request.Method.POST,
-					"https://api.twitter.com/1.1/friendships/destroy.json", query).Request());
-		}
-	}
+            return new Twitter.User(
+                await new TwitterRequest(
+                    twitterContext, API.Methods.POST,
+                    new Uri(API.Urls.Friendships_Destroy), query).Request());
+        }
+    }
 }

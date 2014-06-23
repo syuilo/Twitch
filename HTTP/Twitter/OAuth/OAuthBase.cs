@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Web;
 
-namespace OAuth
+namespace Twitch.HTTP.Twitter.OAuth
 {
 	public class OAuthBase
 	{

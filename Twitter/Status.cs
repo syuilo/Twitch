@@ -11,6 +11,9 @@ namespace Twitch.Twitter
 	/// </summary>
 	public class Status : Twitter.Response.Tweets.Status
 	{
+		public Status()
+			: base() { }
+
 		public Status(string json)
 			: base(json) { }
 

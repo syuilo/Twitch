@@ -11,6 +11,9 @@ namespace Twitch.Twitter.Response.Entities
 	/// </summary>
 	public class Size : TwitterResponse
 	{
+		public Size()
+			: base() { }
+
 		public Size(string source)
 			: base(source)
 		{

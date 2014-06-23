@@ -7,6 +7,9 @@ namespace Twitch.Twitter.Response.Entities
 	/// </summary>
 	public class URL : TwitterResponse
 	{
+		public URL()
+			: base() { }
+
 		public URL(string source)
 			: base(source)
 		{

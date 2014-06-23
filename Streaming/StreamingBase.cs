@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
@@ -10,14 +11,14 @@ using System.Net.Security;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
-using Twitch.HTTP.Twitter.OAuth;
+using Twitch.HTTP.Twitter;
 
 namespace Twitch.Streaming
 {
 	/// <summary>
 	/// Streamingを扱う基底クラスです。
 	/// </summary>
-	public abstract class PublicStream : IStream
+	public abstract class StreamingBase : IStream
 	{
 		#region Events
 
@@ -175,7 +176,7 @@ namespace Twitch.Streaming
 		/// <summary>
 		/// Streamを初期化します。
 		/// </summary>
-		public PublicStream()
+		public StreamingBase()
 		{
 			this.Stream += new StreamEventHandler(StreamingCallback);
 		}
@@ -283,62 +284,80 @@ namespace Twitch.Streaming
 
 			ServicePointManager.ServerCertificateValidationCallback =
 				new RemoteCertificateValidationCallback(
-				OnRemoteCertificateValidationCallback);
+					OnRemoteCertificateValidationCallback);
 
 			HttpWebRequest Request;
 			HttpWebResponse rs;
 			StreamReader sr;
 
-			// リクエストの作成
+			string reqdata = null;
+
+			string url = this.Url;
+
+			if (this.Parameter != null)
+			{
+				// Create request data
+				var para = from DictionaryEntry k in this.Parameter
+                           select (k.Value != null)
+                           ? HTTP.Twitter.OAuth.Core.UrlEncode((string)k.Key, Encoding.UTF8) + "=" + Twitch.HTTP.Twitter.OAuth.Core.UrlEncode((string)k.Value, Encoding.UTF8)
+                           : null;
+
+				reqdata = String.Join("&", para.ToArray());
+
+				if (Method == "GET")
+				{
+					// リクエストデータをURLクエリとして連結
+					url += '?' + reqdata;
+				}
+			}
+
+			// Create request
 			Request = (HttpWebRequest)WebRequest.Create(Url);
 			Request.Method = Method;
 			Request.ContentType = "application/x-www-form-urlencoded";
 			Request.Host = this.Host;
-			Request.Headers["Authorization"] = OAuthCore.GenerateRequestHeader(
-				this.TwitterContext, this.Method, this.Url, this.Parameter);
+			Request.Headers["Authorization"] =
+                HTTP.Twitter.OAuth.Core.GenerateRequestHeader(
+					this.TwitterContext, this.Method, this.Url, this.Parameter);
 
 			if (this.IsGZip)
 				Request.Headers["Accept-Encoding"] = "deflate, gzip";
 
-			if (this.Parameter != null)
+			if (Method == "POST" && this.Parameter != null)
 			{
-				// リクエストデータの作成
-				var para = from DictionaryEntry k in this.Parameter
-						   select (k.Value != null) ? OAuthCore.UrlEncode((string)k.Key, System.Text.Encoding.UTF8) + "=" + OAuthCore.UrlEncode((string)k.Value, System.Text.Encoding.UTF8) : null;
-
-				string reqdata = String.Join("&", para.ToArray());
-
-				// リクエストデータの書き込み
+				// Write request data
 				using (StreamWriter streamWriter = new StreamWriter(await Request.GetRequestStreamAsync()))
 				{
 					await streamWriter.WriteAsync(reqdata);
 				}
 			}
 
-			// 接続を開始
+			// Connection start
 
-			// リクエストの送信
-			rs = (HttpWebResponse)await Request.GetResponseAsync();
+			// Send request
+			try
+			{
+				rs = (HttpWebResponse)await Request.GetResponseAsync();
+			}
+			catch
+			{
+				return;
+			}
 
-			System.IO.Stream st = rs.GetResponseStream();
+			var st = rs.GetResponseStream();
 
 			HttpWebResponse wr = rs as HttpWebResponse;
 			if (wr != null && wr.ContentEncoding.ToLower() == "gzip")
 			{
-				// gzip
+				// GZip
 				GZipStream gzip = new GZipStream(st, CompressionMode.Decompress);
 				sr = new StreamReader(gzip);
 			}
 			else
-			{
 				// text/html
 				sr = new StreamReader(st);
-			}
 
-			string testjson = await sr.ReadLineAsync();
-
-			if (!string.IsNullOrEmpty(testjson))
-				this.OnConnected(EventArgs.Empty);
+			this.OnConnected(EventArgs.Empty);
 
 			string data;
 
@@ -357,7 +376,7 @@ namespace Twitch.Streaming
 			}
 			catch (Exception e)
 			{
-				Console.WriteLine(e.Message);
+				Debug.WriteLine(e.Message);
 
 				this.IsConnected = false;
 				this.OnDisconnected(null);
@@ -430,9 +449,9 @@ namespace Twitch.Streaming
 		/// <summary>
 		/// 
 		/// </summary>
-		~PublicStream()
+        ~StreamingBase()
 		{
-			Console.WriteLine("close");
+			Debug.WriteLine("close");
 		}
 	}
 }

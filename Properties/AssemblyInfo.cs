@@ -6,9 +6,9 @@ using System.Runtime.InteropServices;
 // アセンブリに関連付けられている情報を変更するには、
 // これらの属性値を変更してください。
 [assembly: AssemblyTitle("Twitch")]
-[assembly: AssemblyDescription("Twitch Twitter library - Twitterとの基本的な通信機能を提供するTwitter ライブラリです。")]
+[assembly: AssemblyDescription("Twitch - Twitter library")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("syuilo net")]
+[assembly: AssemblyCompany("syuilo.com")]
 [assembly: AssemblyProduct("Twitch")]
 [assembly: AssemblyCopyright("Copyright © syuilo 2014")]
 [assembly: AssemblyTrademark("")]

@@ -11,6 +11,9 @@ namespace Twitch.Twitter
 	/// </summary>
 	public class Geo : TwitterResponse
 	{
+		public Geo()
+			: base() { }
+
 		public Geo(string source)
 			: base(source)
 		{

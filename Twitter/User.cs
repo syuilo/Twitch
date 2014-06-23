@@ -9,11 +9,14 @@ namespace Twitch.Twitter
 	/// <summary>
 	/// Twitterのユーザー(アカウント)です。
 	/// </summary>
+	[Serializable]
 	public class User : Response.Users.User
 	{
+		public User()
+			: base() { }
+
 		public User(string json)
 			: base(json) { }
-
 
 		/// <summary>
 		/// @を含むScreenNameを取得します。
@@ -29,6 +32,14 @@ namespace Twitch.Twitter
 				this.DisplayScreenName = value;
 			}
 		}
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public void GetHeader()
+        {
+
+        }
 
 
 		/// <summary>

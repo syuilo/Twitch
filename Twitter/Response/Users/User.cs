@@ -8,6 +8,9 @@ namespace Twitch.Twitter.Response.Users
 	/// </summary>
 	public class User : TwitterResponse
 	{
+		public User()
+			: base() { }
+
 		/// <summary>
 		/// Userのコンストラクタです。
 		/// Userを初期化します。
@@ -60,34 +63,34 @@ namespace Twitch.Twitter.Response.Users
 		}
 
 		/// <summary>
-		/// ユーザーページのサイドバーの色
+		/// ユーザーページのサイドバーの色を取得します。
 		/// </summary>
-		public Color ProfileSidebarFillColor
+		public Color? ProfileSidebarFillColor
 		{
 			get;
 			private set;
 		}
 
 		/// <summary>
-		/// ユーザーページのサイドバーの輪郭の色
+		/// ユーザーページのサイドバーの輪郭の色を取得します。
 		/// </summary>
-		public Color ProfileSidebarBorderColor
+		public Color? ProfileSidebarBorderColor
 		{
 			get;
 			private set;
 		}
 
 		/// <summary>
-		/// ユーザーページの背景画像をタイルして表示するか
+		/// ユーザーページの背景画像をタイルして表示するかどうかを表す System.Boolean 値を取得します。
 		/// </summary>
-		public bool IsProfileBackgroundTile
+		public bool? IsProfileBackgroundTile
 		{
 			get;
 			private set;
 		}
 
 		/// <summary>
-		/// ユーザー名
+		/// ユーザー名を取得します。
 		/// </summary>
 		public string Name
 		{
@@ -96,7 +99,7 @@ namespace Twitch.Twitter.Response.Users
 		}
 
 		/// <summary>
-		/// アイコンのURL
+		/// アイコンのURLを取得します。
 		/// </summary>
 		public Uri ProfileImageUrl
 		{
@@ -105,7 +108,7 @@ namespace Twitch.Twitter.Response.Users
 		}
 
 		/// <summary>
-		/// アカウントの作成日時
+		/// アカウントの作成日時を取得します。
 		/// </summary>
 		public string CreatedAt
 		{
@@ -114,7 +117,7 @@ namespace Twitch.Twitter.Response.Users
 		}
 
 		/// <summary>
-		/// プロフィールに設定している「場所」情報
+		/// 場所情報を取得します。
 		/// </summary>
 		public string Location
 		{
@@ -123,7 +126,8 @@ namespace Twitch.Twitter.Response.Users
 		}
 
 		/// <summary>
-		/// フォロー申請をしているかどうか(鍵垢の場合)
+		/// フォロー申請をしているかどうかを表す System.Boolean 値を取得します。<para />
+		/// これは鍵垢の場合にのみ有効なプロパティです。
 		/// </summary>
 		public bool? FollowRequestSent
 		{
@@ -132,25 +136,25 @@ namespace Twitch.Twitter.Response.Users
 		}
 
 		/// <summary>
-		/// ユーザーページのリンクの色
+		/// ユーザーページのリンクの色を取得します。
 		/// </summary>
-		public Color ProfileLinkColor
+		public Color? ProfileLinkColor
 		{
 			get;
 			private set;
 		}
 
 		/// <summary>
-		/// 翻訳者かどうか
+		/// 翻訳者かどうかを表す System.Boolean 値を取得します。
 		/// </summary>
-		public bool IsTranslator
+		public bool? IsTranslator
 		{
 			get;
 			private set;
 		}
 
 		/// <summary>
-		/// ユーザーID
+		/// ユーザーID(String)を取得します。
 		/// </summary>
 		public string StringID
 		{
@@ -159,7 +163,7 @@ namespace Twitch.Twitter.Response.Users
 		}
 
 		/// <summary>
-		/// プロフィールに自己紹介が設定されていないか
+		/// プロフィールに自己紹介が設定されていないかどうかを表す System.Boolean 値を取得します。
 		/// </summary>
 		public bool? IsDefaultProfile
 		{
@@ -168,25 +172,25 @@ namespace Twitch.Twitter.Response.Users
 		}
 
 		/// <summary>
-		/// ライター機能を使用しているかどうか
+		/// ライター機能を使用しているかどうかを表す System.Boolean 値を取得します。
 		/// </summary>
-		public bool ContributorsEnabled
+		public bool? ContributorsEnabled
 		{
 			get;
 			private set;
 		}
 
 		/// <summary>
-		/// お気に入りの数
+		/// お気に入りの数を取得します。
 		/// </summary>
-		public double FavouritesCount
+		public double? FavouritesCount
 		{
 			get;
 			private set;
 		}
 
 		/// <summary>
-		/// プロフィールに設定しているサイトURL
+		/// ウェブサイトURLを取得します。
 		/// </summary>
 		public Uri Url
 		{
@@ -195,7 +199,7 @@ namespace Twitch.Twitter.Response.Users
 		}
 
 		/// <summary>
-		/// アイコンのURL (HTTPS)
+		/// アイコンのURL (HTTPS)を取得します。
 		/// </summary>
 		public Uri ProfileImageUrlHttps
 		{
@@ -204,7 +208,7 @@ namespace Twitch.Twitter.Response.Users
 		}
 
 		/// <summary>
-		/// タイムゾーンとUTC（協定世界時）との差
+		/// タイムゾーンとUTC（協定世界時）との差を取得します。
 		/// </summary>
 		public int? UtcOffset
 		{
@@ -213,43 +217,43 @@ namespace Twitch.Twitter.Response.Users
 		}
 
 		/// <summary>
-		/// ユーザーID
+		/// ユーザーID(Int64)を取得します。
 		/// </summary>
-		public Int64 ID
+		public Int64? ID
 		{
 			get;
 			private set;
 		}
 
 		/// <summary>
-		/// ユーザーページの背景画像を設定しているか
+		/// ユーザーページの背景画像を設定しているかどうかを表す System.Boolean 値を取得します。
 		/// </summary>
-		public bool IsProfileUseBackGroundImage
+		public bool? IsProfileUseBackGroundImage
 		{
 			get;
 			private set;
 		}
 
 		/// <summary>
-		/// 被リスト数
+		/// 被リスト数を取得します。
 		/// </summary>
-		public double ListedCount
+		public double? ListedCount
 		{
 			get;
 			private set;
 		}
 
 		/// <summary>
-		/// ユーザーページのテキスト色
+		/// ユーザーページのテキスト色を取得します。
 		/// </summary>
-		public Color ProfileTextColor
+		public Color? ProfileTextColor
 		{
 			get;
 			private set;
 		}
 
 		/// <summary>
-		/// 言語
+		/// 言語を取得します。
 		/// </summary>
 		public string Lang
 		{
@@ -258,25 +262,25 @@ namespace Twitch.Twitter.Response.Users
 		}
 
 		/// <summary>
-		/// フォロワー数
+		/// フォロワー数を取得します。
 		/// </summary>
-		public double FollowersCount
+		public double? FollowersCount
 		{
 			get;
 			private set;
 		}
 
 		/// <summary>
-		/// 鍵垢かどうか
+		/// 鍵垢かどうかを表す System.Boolean 値を取得します。
 		/// </summary>
-		public bool IsProtected
+		public bool? IsProtected
 		{
 			get;
 			private set;
 		}
 
 		/// <summary>
-		/// このユーザーからの通知を受け取るか
+		/// このユーザーからの通知を受け取るかを表す System.Boolean 値を取得します。
 		/// </summary>
 		public bool? IsNotifications
 		{
@@ -285,7 +289,7 @@ namespace Twitch.Twitter.Response.Users
 		}
 
 		/// <summary>
-		/// ユーザーページの背景画像のURL(HTTPS)
+		/// ユーザーページの背景画像のURL(HTTPS)を取得します。<para />
 		/// (※ヘッダーではありません。Webの公式で見たときに背景に表示されるアレです。ヘッダーを取得したい場合は GET users/profile_banner を使用してください。)
 		/// </summary>
 		public Uri ProfileBackgroundImageUrlHttps
@@ -295,34 +299,34 @@ namespace Twitch.Twitter.Response.Users
 		}
 
 		/// <summary>
-		/// ユーザーページの背景色
+		/// ユーザーページの背景色を取得します。
 		/// </summary>
-		public Color ProfileBackgroundColor
+		public Color? ProfileBackgroundColor
 		{
 			get;
 			private set;
 		}
 
 		/// <summary>
-		/// 認証済みアカウントかどうか
+		/// 認証済みアカウントかどうかを表す System.Boolean 値を取得します。
 		/// </summary>
-		public bool IsVerified
+		public bool? IsVerified
 		{
 			get;
 			private set;
 		}
 
 		/// <summary>
-		/// ツイートに位置情報を付加しているか
+		/// ツイートに位置情報を付加しているかどうかを表す System.Boolean 値を取得します。
 		/// </summary>
-		public bool GeoEnabled
+		public bool? GeoEnabled
 		{
 			get;
 			private set;
 		}
 
 		/// <summary>
-		/// タイムゾーン
+		/// タイムゾーンを取得します。
 		/// </summary>
 		public string TimeZone
 		{
@@ -331,7 +335,7 @@ namespace Twitch.Twitter.Response.Users
 		}
 
 		/// <summary>
-		/// プロフィール (自己紹介)
+		/// プロフィール (自己紹介)を取得します。
 		/// </summary>
 		public string Description
 		{
@@ -350,7 +354,7 @@ namespace Twitch.Twitter.Response.Users
 		}
 
 		/// <summary>
-		/// ユーザーページの背景画像のURL
+		/// ユーザーページの背景画像のURLを取得します。<para />
 		/// (※ヘッダーではありません。Webの公式で見たときに背景に表示されるアレです。ヘッダーを取得したい場合は GET users/profile_banner を使用してください。)
 		/// </summary>
 		public Uri ProfileBackgroundImageUrl
@@ -360,7 +364,7 @@ namespace Twitch.Twitter.Response.Users
 		}
 
 		/// <summary>
-		/// 最近のツイート。
+		/// 直近のツイートを取得します。<para />
 		/// Null を返す場合もあります。
 		/// </summary>
 		public Tweets.Status Status
@@ -370,25 +374,25 @@ namespace Twitch.Twitter.Response.Users
 		}
 
 		/// <summary>
-		/// ツイート数
+		/// ツイート数を取得します。
 		/// </summary>
-		public double StatusesCount
+		public double? StatusesCount
 		{
 			get;
 			private set;
 		}
 
 		/// <summary>
-		/// フォロー数
+		/// フォロー数を取得します。
 		/// </summary>
-		public double FriendsCount
+		public double? FriendsCount
 		{
 			get;
 			private set;
 		}
 
 		/// <summary>
-		/// フォローしているか
+		/// このユーザーをフォローしているかどうかを表す System.Boolean 値を取得します。
 		/// </summary>
 		public bool? IsFollowing
 		{
@@ -397,7 +401,7 @@ namespace Twitch.Twitter.Response.Users
 		}
 
 		/// <summary>
-		/// 投稿された写真とビデオをすべて表示するかどうか
+		/// 投稿された写真とビデオをすべて表示するかどうかを表す System.Boolean 値を取得します。
 		/// </summary>
 		public bool? IsShowAllInlineMedia
 		{
@@ -406,7 +410,7 @@ namespace Twitch.Twitter.Response.Users
 		}
 
 		/// <summary>
-		/// スクリーン名 (@以降)
+		/// スクリーン名 (@以降)を取得します。
 		/// </summary>
 		public string ScreenName
 		{

@@ -1,45 +1,45 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.Specialized;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 using Twitch.HTTP.Twitter;
 
 namespace Twitch.Twitter.APIs.REST
 {
-	public static class Account
-	{
-		public static async Task<Twitter.User> UpdateProfile(TwitterContext twitterContext, string name = null, Uri url = null, string location = null, string description = null)
-		{
-			StringDictionary query = new StringDictionary();
+    public static class Account
+    {
+        /// <summary>
+        /// アカウントのプロフィールを各種変更します。
+        /// </summary>
+        /// <param name="twitterContext">更新するアカウント。</param>
+        /// <param name="name">名前。nullまたは指定しなかった場合はこのパラメータは更新されません。</param>
+        /// <param name="url">ウェブサイト URL。nullまたは指定しなかった場合はこのパラメータは更新されません。</param>
+        /// <param name="location">場所。nullまたは指定しなかった場合はこのパラメータは更新されません。</param>
+        /// <param name="description">自己紹介。nullまたは指定しなかった場合はこのパラメータは更新されません。</param>
+        /// <returns>更新されたユーザー。</returns>
+        public static async Task<Twitter.User> UpdateProfile(TwitterContext twitterContext, string name = null, Uri url = null, string location = null, string description = null)
+        {
+            StringDictionary query = new StringDictionary();
+            query["name"] = name;
+            query["url"] = url.ToString();
+            query["location"] = location;
+            query["description"] = description;
 
-			if (name != null)
-				query["name"] = name;
-			if (url != null)
-				query["url"] = url.ToString();
-			if (location != null)
-				query["location"] = location;
-			if (description != null)
-				query["description"] = description;
+            return new User(await new TwitterRequest(twitterContext, API.Methods.POST, new Uri(API.Urls.Account_UpdateProfile), query).Request());
+        }
 
-			return new User(await new TwitterRequest(twitterContext, HTTP.Request.Method.POST, "https://api.twitter.com/1.1/account/update_profile.json", query).Request());
-		}
+        /// <summary>
+        /// TwitterContextのアイコンを更新します。
+        /// </summary>
+        /// <param name="twitterContext">更新するアカウント。</param>
+        /// <param name="image">base64エンコードされたgifまたはjpgまたはpngの画像。</param>
+        /// <returns>更新されたユーザー。</returns>
+        public static async Task<Twitter.User> UpdateProfileImage(TwitterContext twitterContext, string image)
+        {
+            StringDictionary query = new StringDictionary();
+            query["image"] = image;
 
-		/// <summary>
-		/// TwitterContextのアイコンを更新します。
-		/// </summary>
-		/// <param name="twitterContext"></param>
-		/// <param name="image">base64エンコードされたgifまたはjpgまたはpngの画像。</param>
-		/// <returns></returns>
-		public static async Task<Twitter.User> UpdateProfileImage(TwitterContext twitterContext, string image)
-		{
-			StringDictionary query = new StringDictionary();
-
-			query["image"] = image;
-
-			return new User(await new TwitterRequest(twitterContext, HTTP.Request.Method.POST, "https://api.twitter.com/1.1/account/update_profile_image.json", query).Request());
-		}
-	}
+            return new User(await new TwitterRequest(twitterContext, API.Methods.POST, new Uri(API.Urls.Account_UpdateProfileImage), query).Request());
+        }
+    }
 }

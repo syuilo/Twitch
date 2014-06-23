@@ -11,6 +11,9 @@ namespace Twitch.Twitter.Response.Entities
 	/// </summary>
 	public class Hashtag : TwitterResponse
 	{
+		public Hashtag()
+			: base() { }
+
 		public Hashtag(string source)
 			: base(source)
 		{

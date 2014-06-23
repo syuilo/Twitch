@@ -11,6 +11,12 @@ namespace Twitch.Twitter
 	/// </summary>
 	abstract public class TwitterResponse
 	{
+		public TwitterResponse()
+		{
+			this.StringJson = null;
+			this.Json = null;
+		}
+
 		/// <summary>
 		/// TwitterResponseを初期化します。
 		/// </summary>
