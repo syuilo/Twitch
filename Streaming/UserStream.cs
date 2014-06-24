@@ -331,7 +331,8 @@ namespace Twitch.Streaming
         /// <summary>
         /// UserStreamを初期化します。
         /// </summary>
-        public UserStream()
+        public UserStream(TwitterContext twitterContext)
+            : base(twitterContext)
         {
             this.StreamMessaged += new StreamMessagedEventHandler(StreamingCallback);
 

@@ -176,8 +176,11 @@ namespace Twitch.Streaming
         /// <summary>
         /// Streamを初期化します。
         /// </summary>
-        public StreamingBase()
+        public StreamingBase(TwitterContext twitterContext)
         {
+            this.TwitterContext = twitterContext;
+            this.IsGZip = true;
+
             this.Stream += new StreamEventHandler(StreamingCallback);
         }
 
@@ -278,17 +281,13 @@ namespace Twitch.Streaming
         {
             this.IsConnected = true;
 
-            string response = String.Empty;
-
             ServicePointManager.ServerCertificateValidationCallback =
                 new RemoteCertificateValidationCallback(
                     OnRemoteCertificateValidationCallback);
 
-            HttpWebRequest request;
-            StreamReader sr;
-
             string reqdata = null;
-            string url = this.Url;
+            string requrl = this.Url;
+            string response = String.Empty;
 
             if (this.Parameter != null)
             {
@@ -302,27 +301,24 @@ namespace Twitch.Streaming
 
                 if (Method == Methods.GET)
                     // Join request data to url query
-                    url += '?' + reqdata;
+                    requrl += '?' + reqdata;
             }
 
-            string auth = Core.GenerateRequestHeader(this.TwitterContext, this.Method.ToString(), this.Url, this.Parameter);
+            string auth = Core.GenerateRequestHeader(
+                this.TwitterContext, this.Method.ToString(), this.Url, this.Parameter);
 
             // Create request
-            request = (HttpWebRequest)WebRequest.Create(this.Url);
-            request.Method = Method.ToString();
+            var request = (HttpWebRequest)WebRequest.Create(requrl);
+            request.Method = this.Method.ToString();
             request.ContentType = "application/x-www-form-urlencoded";
             request.Host = this.Host;
             request.Headers["Authorization"] = auth;
-            request.Headers["Accept-Encoding"] = this.IsGZip ? "deflate, gzip": null;
+            request.Headers["Accept-Encoding"] = this.IsGZip ? "deflate, gzip" : null;
 
             if (Method == Methods.POST && this.Parameter != null)
-            {
                 // Write request data
                 using (var streamWriter = new StreamWriter(await request.GetRequestStreamAsync()))
-                {
                     await streamWriter.WriteAsync(reqdata);
-                }
-            }
 
             // Connection start
         ConnectionStart:
@@ -332,57 +328,56 @@ namespace Twitch.Streaming
             using (var st = rs.GetResponseStream())
             {
                 var wr = rs as HttpWebResponse;
-                if (wr != null && wr.ContentEncoding.ToLower() == "gzip")
-                {
-                    // GZip
-                    var gzip = new GZipStream(st, CompressionMode.Decompress);
-                    sr = new StreamReader(gzip);
-                }
-                else
-                    // text/html
-                    sr = new StreamReader(st);
+                GZipStream gzip = null;
 
-                this.OnConnected(EventArgs.Empty);
+                //bool isgzip = (wr != null && wr.ContentEncoding.ToLower() == "gzip");
 
-                try
+                if (this.IsGZip)
+                    gzip = new GZipStream(st, CompressionMode.Decompress);
+
+                using (var sr = new StreamReader(IsGZip ? gzip : st))
                 {
-                    // Streaming
-                    while (this.IsConnected)
+                    this.OnConnected(EventArgs.Empty);
+
+                    try
                     {
-                        string data = await sr.ReadLineAsync();
-
-                        // 接続を維持するために、空白行(Blank lines)が送られてくることがある
-                        if (!string.IsNullOrEmpty(data))
-                            this.OnStream(new StreamEventArgs(data));
-                        else
-                            this.OnKeepAliveSignaled(EventArgs.Empty);
-                    }
-                }
-                catch (Exception e)
-                {
-                    Debug.WriteLine(e.Message);
-
-                    this.IsConnected = false;
-                    this.OnDisconnected(null);
-
-                    // Re connect
-                    if (this.IsAutoReconnect)
-                    {
-                        this.OnReconnected(EventArgs.Empty);
-                        System.Threading.Thread.Sleep(this.Deley);
-                        this.Deley += 250;
-
-                        if (this.Deley < 1000)
+                        // Streaming
+                        while (this.IsConnected)
                         {
-                            this.IsConnected = true;
-                            goto ConnectionStart;
+                            string data = await sr.ReadLineAsync();
+
+                            // 接続を維持するために、空白行(Blank lines)が送られてくることがある
+                            if (!string.IsNullOrEmpty(data))
+                                this.OnStream(new StreamEventArgs(data));
+                            else
+                                this.OnKeepAliveSignaled(EventArgs.Empty);
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        Debug.WriteLine(e.Message);
+
+                        this.IsConnected = false;
+                        this.OnDisconnected(null);
+
+                        // Re connect
+                        if (this.IsAutoReconnect)
+                        {
+                            this.OnReconnected(EventArgs.Empty);
+                            System.Threading.Thread.Sleep(this.Deley);
+                            this.Deley += 250;
+
+                            if (this.Deley < 1000)
+                            {
+                                this.IsConnected = true;
+                                goto ConnectionStart;
+                            }
                         }
                     }
                 }
             }
 
             request.Abort();
-            sr.Close();
 
             this.OnTerminated(EventArgs.Empty);
         }
