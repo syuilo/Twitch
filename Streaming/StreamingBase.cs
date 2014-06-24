@@ -301,19 +301,19 @@ namespace Twitch.Streaming
                 reqdata = String.Join("&", para.ToArray());
 
                 if (Method == Methods.GET)
-                    // リクエストデータをURLクエリとして連結
+                    // Join request data to url query
                     url += '?' + reqdata;
             }
 
+            string auth = Core.GenerateRequestHeader(this.TwitterContext, this.Method.ToString(), this.Url, this.Parameter);
+
             // Create request
-            request = (HttpWebRequest)WebRequest.Create(Url);
+            request = (HttpWebRequest)WebRequest.Create(this.Url);
             request.Method = Method.ToString();
             request.ContentType = "application/x-www-form-urlencoded";
             request.Host = this.Host;
-            request.Headers["Authorization"] =
-                Core.GenerateRequestHeader(this.TwitterContext, this.Method.ToString(), this.Url, this.Parameter);
-            if (this.IsGZip)
-                request.Headers["Accept-Encoding"] = "deflate, gzip";
+            request.Headers["Authorization"] = auth;
+            request.Headers["Accept-Encoding"] = this.IsGZip ? "deflate, gzip": null;
 
             if (Method == Methods.POST && this.Parameter != null)
             {
@@ -365,7 +365,7 @@ namespace Twitch.Streaming
                     this.IsConnected = false;
                     this.OnDisconnected(null);
 
-                    // 再接続
+                    // Re connect
                     if (this.IsAutoReconnect)
                     {
                         this.OnReconnected(EventArgs.Empty);
