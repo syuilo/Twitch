@@ -301,10 +301,8 @@ namespace Twitch.Streaming
                 reqdata = String.Join("&", para.ToArray());
 
                 if (Method == Methods.GET)
-                {
                     // リクエストデータをURLクエリとして連結
                     url += '?' + reqdata;
-                }
             }
 
             // Create request
@@ -314,14 +312,13 @@ namespace Twitch.Streaming
             request.Host = this.Host;
             request.Headers["Authorization"] =
                 Core.GenerateRequestHeader(this.TwitterContext, this.Method.ToString(), this.Url, this.Parameter);
-
             if (this.IsGZip)
                 request.Headers["Accept-Encoding"] = "deflate, gzip";
 
             if (Method == Methods.POST && this.Parameter != null)
             {
                 // Write request data
-                using (StreamWriter streamWriter = new StreamWriter(await request.GetRequestStreamAsync()))
+                using (var streamWriter = new StreamWriter(await request.GetRequestStreamAsync()))
                 {
                     await streamWriter.WriteAsync(reqdata);
                 }
@@ -334,11 +331,11 @@ namespace Twitch.Streaming
             using (var rs = (HttpWebResponse)await request.GetResponseAsync())
             using (var st = rs.GetResponseStream())
             {
-                HttpWebResponse wr = rs as HttpWebResponse;
+                var wr = rs as HttpWebResponse;
                 if (wr != null && wr.ContentEncoding.ToLower() == "gzip")
                 {
                     // GZip
-                    GZipStream gzip = new GZipStream(st, CompressionMode.Decompress);
+                    var gzip = new GZipStream(st, CompressionMode.Decompress);
                     sr = new StreamReader(gzip);
                 }
                 else
@@ -347,13 +344,12 @@ namespace Twitch.Streaming
 
                 this.OnConnected(EventArgs.Empty);
 
-                string data;
-
                 try
                 {
+                    // Streaming
                     while (this.IsConnected)
                     {
-                        data = await sr.ReadLineAsync();
+                        string data = await sr.ReadLineAsync();
 
                         // 接続を維持するために、空白行(Blank lines)が送られてくることがある
                         if (!string.IsNullOrEmpty(data))
