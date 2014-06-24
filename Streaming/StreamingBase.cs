@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Diagnostics;
 using System.IO;
@@ -10,448 +9,448 @@ using System.Net;
 using System.Net.Security;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
-using System.Threading.Tasks;
-using Twitch.HTTP.Twitter;
+
+using Twitch.HTTP.Twitter.OAuth;
+using Twitch.Twitter.API;
 
 namespace Twitch.Streaming
 {
-	/// <summary>
-	/// Streamingを扱う基底クラスです。
-	/// </summary>
-	public abstract class StreamingBase : IStream
-	{
-		#region Events
+    /// <summary>
+    /// Streamingを扱う基底クラスです。
+    /// </summary>
+    public abstract class StreamingBase : IDisposable
+    {
+        #region Events
 
-		#region StreamEvent
-		public delegate void StreamEventHandler(object sender, StreamEventArgs e);
+        #region StreamEvent
+        public delegate void StreamEventHandler(object sender, StreamEventArgs e);
 
-		/// <summary>
-		/// Streamからデータを受信しました。
-		/// </summary>
-		public event StreamEventHandler Stream;
+        /// <summary>
+        /// Streamからデータを受信しました。
+        /// </summary>
+        public event StreamEventHandler Stream;
 
-		/// <summary>
-		/// Stream イベントを発行します。
-		/// </summary>
-		protected virtual void OnStream(StreamEventArgs e)
-		{
-			if (Stream != null)
-				Stream(this, e);
-		}
-		#endregion
+        /// <summary>
+        /// Stream イベントを発行します。
+        /// </summary>
+        protected virtual void OnStream(StreamEventArgs e)
+        {
+            if (Stream != null)
+                Stream(this, e);
+        }
+        #endregion
 
-		#region StreamMessagedEvent
-		public delegate void StreamMessagedEventHandler(object sender, StreamEventArgs e);
+        #region StreamMessagedEvent
+        public delegate void StreamMessagedEventHandler(object sender, StreamEventArgs e);
 
-		/// <summary>
-		/// 処理すべきStreamメッセージが発行されました。
-		/// </summary>
-		public event StreamMessagedEventHandler StreamMessaged;
+        /// <summary>
+        /// 処理すべきStreamメッセージが発行されました。
+        /// </summary>
+        public event StreamMessagedEventHandler StreamMessaged;
 
-		/// <summary>
-		/// StreamMessaged イベントを発行します。
-		/// </summary>
-		protected virtual void OnStreamMessaged(StreamEventArgs e)
-		{
-			if (StreamMessaged != null)
-				StreamMessaged(this, e);
-		}
-		#endregion
+        /// <summary>
+        /// StreamMessaged イベントを発行します。
+        /// </summary>
+        protected virtual void OnStreamMessaged(StreamEventArgs e)
+        {
+            if (StreamMessaged != null)
+                StreamMessaged(this, e);
+        }
+        #endregion
 
-		#region ConnectedEvent
-		public delegate void ConnectedEventHandler(object sender, EventArgs e);
+        #region ConnectedEvent
+        public delegate void ConnectedEventHandler(object sender, EventArgs e);
 
-		/// <summary>
-		/// Streamに接続しました。
-		/// </summary>
-		public event ConnectedEventHandler Connected;
+        /// <summary>
+        /// Streamに接続しました。
+        /// </summary>
+        public event ConnectedEventHandler Connected;
 
-		/// <summary>
-		/// Connected イベントを発行します。
-		/// </summary>
-		protected virtual void OnConnected(EventArgs e)
-		{
-			if (Connected != null)
-				Connected(this, e);
-		}
-		#endregion
+        /// <summary>
+        /// Connected イベントを発行します。
+        /// </summary>
+        protected virtual void OnConnected(EventArgs e)
+        {
+            if (Connected != null)
+                Connected(this, e);
+        }
+        #endregion
 
-		#region DisconnectedEvent
-		public delegate void DisconnectedEventHandler(object sender, DisconnectedEventArgs e);
+        #region DisconnectedEvent
+        public delegate void DisconnectedEventHandler(object sender, DisconnectedEventArgs e);
 
-		/// <summary>
-		/// Streamから切断されました。
-		/// </summary>
-		public event DisconnectedEventHandler Disconnected;
+        /// <summary>
+        /// Streamから切断されました。
+        /// </summary>
+        public event DisconnectedEventHandler Disconnected;
 
-		/// <summary>
-		/// Disconnected イベントを発行します。
-		/// </summary>
-		protected virtual void OnDisconnected(DisconnectedEventArgs e)
-		{
-			if (Disconnected != null)
-				Disconnected(this, e);
-		}
-		#endregion
+        /// <summary>
+        /// Disconnected イベントを発行します。
+        /// </summary>
+        protected virtual void OnDisconnected(DisconnectedEventArgs e)
+        {
+            if (Disconnected != null)
+                Disconnected(this, e);
+        }
+        #endregion
 
-		#region TerminatedEvent
-		public delegate void TerminatedEventHandler(object sender, EventArgs e);
+        #region TerminatedEvent
+        public delegate void TerminatedEventHandler(object sender, EventArgs e);
 
-		/// <summary>
-		/// Streamから切断しました。
-		/// </summary>
-		public event TerminatedEventHandler Terminated;
+        /// <summary>
+        /// Streamから切断しました。
+        /// </summary>
+        public event TerminatedEventHandler Terminated;
 
-		/// <summary>
-		/// Terminated イベントを発行します。
-		/// </summary>
-		protected virtual void OnTerminated(EventArgs e)
-		{
-			if (Terminated != null)
-				Terminated(this, e);
-		}
-		#endregion
+        /// <summary>
+        /// Terminated イベントを発行します。
+        /// </summary>
+        protected virtual void OnTerminated(EventArgs e)
+        {
+            if (Terminated != null)
+                Terminated(this, e);
+        }
+        #endregion
 
-		#region KeepAliveSignaledEvent
-		public delegate void KeepAliveSignaledEventHandler(object sender, EventArgs e);
+        #region KeepAliveSignaledEvent
+        public delegate void KeepAliveSignaledEventHandler(object sender, EventArgs e);
 
-		/// <summary>
-		/// 接続を維持するために、空白行が送られました。
-		/// </summary>
-		public event KeepAliveSignaledEventHandler KeepAliveSignaled;
+        /// <summary>
+        /// 接続を維持するために、空白行が送られました。
+        /// </summary>
+        public event KeepAliveSignaledEventHandler KeepAliveSignaled;
 
-		/// <summary>
-		/// KeepAliveSignaled イベントを発行します。
-		/// </summary>
-		protected virtual void OnKeepAliveSignaled(EventArgs e)
-		{
-			if (KeepAliveSignaled != null)
-				KeepAliveSignaled(this, e);
-		}
-		#endregion
+        /// <summary>
+        /// KeepAliveSignaled イベントを発行します。
+        /// </summary>
+        protected virtual void OnKeepAliveSignaled(EventArgs e)
+        {
+            if (KeepAliveSignaled != null)
+                KeepAliveSignaled(this, e);
+        }
+        #endregion
 
-		#region StatusDeletionEvent
-		public delegate void StatusDeletionEventHandler(object sender, StatusDeletionEventArgs e);
+        #region StatusDeletionEvent
+        public delegate void StatusDeletionEventHandler(object sender, StatusDeletionEventArgs e);
 
-		/// <summary>
-		/// ツイートが削除されました。
-		/// </summary>
-		public event StatusDeletionEventHandler StatusDeletion;
+        /// <summary>
+        /// ツイートが削除されました。
+        /// </summary>
+        public event StatusDeletionEventHandler StatusDeletion;
 
-		/// <summary>
-		/// StatusDeletion イベントを発行します。
-		/// </summary>
-		protected virtual void OnStatusDeletion(StatusDeletionEventArgs e)
-		{
-			if (StatusDeletion != null)
-				StatusDeletion(this, e);
-		}
-		#endregion
+        /// <summary>
+        /// StatusDeletion イベントを発行します。
+        /// </summary>
+        protected virtual void OnStatusDeletion(StatusDeletionEventArgs e)
+        {
+            if (StatusDeletion != null)
+                StatusDeletion(this, e);
+        }
+        #endregion
 
-		#region ReconnectedEvent
-		public delegate void ReconnectedEventHandler(object sender, EventArgs e);
+        #region ReconnectedEvent
+        public delegate void ReconnectedEventHandler(object sender, EventArgs e);
 
-		/// <summary>
-		/// Streamへの再接続を試みました。
-		/// </summary>
-		public event ReconnectedEventHandler Reconnected;
+        /// <summary>
+        /// Streamへの再接続を試みました。
+        /// </summary>
+        public event ReconnectedEventHandler Reconnected;
 
-		/// <summary>
-		/// Reconnected イベントを発行します。
-		/// </summary>
-		protected virtual void OnReconnected(EventArgs e)
-		{
-			if (Reconnected != null)
-				Reconnected(this, e);
-		}
-		#endregion
+        /// <summary>
+        /// Reconnected イベントを発行します。
+        /// </summary>
+        protected virtual void OnReconnected(EventArgs e)
+        {
+            if (Reconnected != null)
+                Reconnected(this, e);
+        }
+        #endregion
 
-		#endregion
+        #endregion
 
-		/// <summary>
-		/// 再接続のためのディレイ
-		/// </summary>
-		private int Deley = 0;
+        /// <summary>
+        /// 再接続のためのディレイ
+        /// </summary>
+        private int Deley = 0;
 
-		/// <summary>
-		/// Streamを初期化します。
-		/// </summary>
-		public StreamingBase()
-		{
-			this.Stream += new StreamEventHandler(StreamingCallback);
-		}
+        /// <summary>
+        /// Streamを初期化します。
+        /// </summary>
+        public StreamingBase()
+        {
+            this.Stream += new StreamEventHandler(StreamingCallback);
+        }
 
-		/// <summary>
-		/// Streamに接続されているかを取得します。
-		/// </summary>
-		public bool IsConnected
-		{
-			get;
-			protected set;
-		}
+        /// <summary>
+        /// Streamに接続されているかを取得します。
+        /// </summary>
+        public bool IsConnected
+        {
+            get;
+            protected set;
+        }
 
-		/// <summary>
-		/// 接続に使用するTwitterContextを取得または設定します。
-		/// </summary>
-		public TwitterContext TwitterContext
-		{
-			get;
-			set;
-		}
+        /// <summary>
+        /// 接続に使用するTwitterContextを取得または設定します。
+        /// </summary>
+        public TwitterContext TwitterContext
+        {
+            get;
+            set;
+        }
 
-		/// <summary>
-		/// 接続に使用するHTTPメソッドを取得または設定します。
-		/// </summary>
-		public string Method
-		{
-			get;
-			set;
-		}
+        /// <summary>
+        /// 接続に使用するHTTPメソッドを取得または設定します。
+        /// </summary>
+        public Methods Method
+        {
+            get;
+            set;
+        }
 
-		/// <summary>
-		/// Streaming APIのホスト。
-		/// </summary>
-		public string Host
-		{
-			get;
-			set;
-		}
+        /// <summary>
+        /// Streaming APIのホスト。
+        /// </summary>
+        public string Host
+        {
+            get;
+            set;
+        }
 
-		/// <summary>
-		/// Streaming APIのURL。
-		/// </summary>
-		public string Url
-		{
-			get;
-			set;
-		}
+        /// <summary>
+        /// Streaming APIのURL。
+        /// </summary>
+        public string Url
+        {
+            get;
+            set;
+        }
 
-		/// <summary>
-		/// リクエストのパラメータ。
-		/// </summary>
-		public StringDictionary Parameter
-		{
-			get;
-			set;
-		}
+        /// <summary>
+        /// リクエストのパラメータ。
+        /// </summary>
+        public StringDictionary Parameter
+        {
+            get;
+            set;
+        }
 
-		/// <summary>
-		/// Streamからの不明なイベントや予期しないメッセージを許容するかどうかを取得または設定します。
-		/// </summary>
-		public bool IsTolerance
-		{
-			get;
-			set;
-		}
+        /// <summary>
+        /// Streamからの不明なイベントや予期しないメッセージを許容するかどうかを取得または設定します。
+        /// </summary>
+        public bool IsTolerance
+        {
+            get;
+            set;
+        }
 
-		/// <summary>
-		/// この接続をGZipで通信を行うかどうかを取得または設定します。
-		/// </summary>
-		public bool IsGZip
-		{
-			get;
-			set;
-		}
+        /// <summary>
+        /// この接続をGZipで通信を行うかどうかを取得または設定します。
+        /// </summary>
+        public bool IsGZip
+        {
+            get;
+            set;
+        }
 
-		/// <summary>
-		/// Streamから切断されたときに、自動的に再接続を試みるかどうかを示す System.Boolean 値を取得または設定します。
-		/// </summary>
-		public bool IsAutoReconnect
-		{
-			get;
-			set;
-		}
+        /// <summary>
+        /// Streamから切断されたときに、自動的に再接続を試みるかどうかを示す System.Boolean 値を取得または設定します。
+        /// </summary>
+        public bool IsAutoReconnect
+        {
+            get;
+            set;
+        }
 
-		protected bool OnRemoteCertificateValidationCallback(
-			Object sender,
-			X509Certificate certificate,
-			X509Chain chain,
-			SslPolicyErrors sslPolicyErrors)
-		{
-			return true;
-		}
+        protected bool OnRemoteCertificateValidationCallback(
+            Object sender,
+            X509Certificate certificate,
+            X509Chain chain,
+            SslPolicyErrors sslPolicyErrors)
+        {
+            return true;
+        }
 
-		/// <summary>
-		/// Streamへの接続を試みます。
-		/// </summary>
-		public async void Connect()
-		{
-			this.IsConnected = true;
+        /// <summary>
+        /// Streamへ接続します。
+        /// </summary>
+        public async void Connect()
+        {
+            this.IsConnected = true;
 
-		ConnectionStart:
+            string response = String.Empty;
 
-			string response = String.Empty;
+            ServicePointManager.ServerCertificateValidationCallback =
+                new RemoteCertificateValidationCallback(
+                    OnRemoteCertificateValidationCallback);
 
-			ServicePointManager.ServerCertificateValidationCallback =
-				new RemoteCertificateValidationCallback(
-					OnRemoteCertificateValidationCallback);
+            HttpWebRequest request;
+            StreamReader sr;
 
-			HttpWebRequest Request;
-			HttpWebResponse rs;
-			StreamReader sr;
+            string reqdata = null;
+            string url = this.Url;
 
-			string reqdata = null;
-
-			string url = this.Url;
-
-			if (this.Parameter != null)
-			{
-				// Create request data
-				var para = from DictionaryEntry k in this.Parameter
+            if (this.Parameter != null)
+            {
+                // Create request data
+                var para = from DictionaryEntry k in this.Parameter
                            select (k.Value != null)
-                           ? HTTP.Twitter.OAuth.Core.UrlEncode((string)k.Key, Encoding.UTF8) + "=" + Twitch.HTTP.Twitter.OAuth.Core.UrlEncode((string)k.Value, Encoding.UTF8)
+                           ? Core.UrlEncode((string)k.Key, Encoding.UTF8) + '=' + Core.UrlEncode((string)k.Value, Encoding.UTF8)
                            : null;
 
-				reqdata = String.Join("&", para.ToArray());
+                reqdata = String.Join("&", para.ToArray());
 
-				if (Method == "GET")
-				{
-					// リクエストデータをURLクエリとして連結
-					url += '?' + reqdata;
-				}
-			}
+                if (Method == Methods.GET)
+                {
+                    // リクエストデータをURLクエリとして連結
+                    url += '?' + reqdata;
+                }
+            }
 
-			// Create request
-			Request = (HttpWebRequest)WebRequest.Create(Url);
-			Request.Method = Method;
-			Request.ContentType = "application/x-www-form-urlencoded";
-			Request.Host = this.Host;
-			Request.Headers["Authorization"] =
-                HTTP.Twitter.OAuth.Core.GenerateRequestHeader(
-					this.TwitterContext, this.Method, this.Url, this.Parameter);
+            // Create request
+            request = (HttpWebRequest)WebRequest.Create(Url);
+            request.Method = Method.ToString();
+            request.ContentType = "application/x-www-form-urlencoded";
+            request.Host = this.Host;
+            request.Headers["Authorization"] =
+                Core.GenerateRequestHeader(this.TwitterContext, this.Method.ToString(), this.Url, this.Parameter);
 
-			if (this.IsGZip)
-				Request.Headers["Accept-Encoding"] = "deflate, gzip";
+            if (this.IsGZip)
+                request.Headers["Accept-Encoding"] = "deflate, gzip";
 
-			if (Method == "POST" && this.Parameter != null)
-			{
-				// Write request data
-				using (StreamWriter streamWriter = new StreamWriter(await Request.GetRequestStreamAsync()))
-				{
-					await streamWriter.WriteAsync(reqdata);
-				}
-			}
+            if (Method == Methods.POST && this.Parameter != null)
+            {
+                // Write request data
+                using (StreamWriter streamWriter = new StreamWriter(await request.GetRequestStreamAsync()))
+                {
+                    await streamWriter.WriteAsync(reqdata);
+                }
+            }
 
-			// Connection start
+            // Connection start
+        ConnectionStart:
 
-			// Send request
-			try
-			{
-				rs = (HttpWebResponse)await Request.GetResponseAsync();
-			}
-			catch
-			{
-				return;
-			}
+            // Send request
+            using (var rs = (HttpWebResponse)await request.GetResponseAsync())
+            using (var st = rs.GetResponseStream())
+            {
+                HttpWebResponse wr = rs as HttpWebResponse;
+                if (wr != null && wr.ContentEncoding.ToLower() == "gzip")
+                {
+                    // GZip
+                    GZipStream gzip = new GZipStream(st, CompressionMode.Decompress);
+                    sr = new StreamReader(gzip);
+                }
+                else
+                    // text/html
+                    sr = new StreamReader(st);
 
-			var st = rs.GetResponseStream();
+                this.OnConnected(EventArgs.Empty);
 
-			HttpWebResponse wr = rs as HttpWebResponse;
-			if (wr != null && wr.ContentEncoding.ToLower() == "gzip")
-			{
-				// GZip
-				GZipStream gzip = new GZipStream(st, CompressionMode.Decompress);
-				sr = new StreamReader(gzip);
-			}
-			else
-				// text/html
-				sr = new StreamReader(st);
+                string data;
 
-			this.OnConnected(EventArgs.Empty);
+                try
+                {
+                    while (this.IsConnected)
+                    {
+                        data = await sr.ReadLineAsync();
 
-			string data;
+                        // 接続を維持するために、空白行(Blank lines)が送られてくることがある
+                        if (!string.IsNullOrEmpty(data))
+                            this.OnStream(new StreamEventArgs(data));
+                        else
+                            this.OnKeepAliveSignaled(EventArgs.Empty);
+                    }
+                }
+                catch (Exception e)
+                {
+                    Debug.WriteLine(e.Message);
 
-			try
-			{
-				while (IsConnected)
-				{
-					data = await sr.ReadLineAsync();
+                    this.IsConnected = false;
+                    this.OnDisconnected(null);
 
-					// 接続を維持するために、空白行(Blank lines)が送られてくることがある
-					if (!string.IsNullOrEmpty(data))
-						this.OnStream(new StreamEventArgs(data));
-					else
-						this.OnKeepAliveSignaled(EventArgs.Empty);
-				}
-			}
-			catch (Exception e)
-			{
-				Debug.WriteLine(e.Message);
+                    // 再接続
+                    if (this.IsAutoReconnect)
+                    {
+                        this.OnReconnected(EventArgs.Empty);
+                        System.Threading.Thread.Sleep(this.Deley);
+                        this.Deley += 250;
 
-				this.IsConnected = false;
-				this.OnDisconnected(null);
+                        if (this.Deley < 1000)
+                        {
+                            this.IsConnected = true;
+                            goto ConnectionStart;
+                        }
+                    }
+                }
+            }
 
-				// 再接続
-				if (this.IsAutoReconnect)
-				{
-					this.OnReconnected(EventArgs.Empty);
-					System.Threading.Thread.Sleep(this.Deley);
-					this.Deley += 250;
+            request.Abort();
+            sr.Close();
 
-					if (this.Deley < 1000)
-						goto ConnectionStart;
-				}
-			}
+            this.OnTerminated(EventArgs.Empty);
+        }
 
-			Request.Abort();
-			rs.Close();
-			sr.Close();
+        /// <summary>
+        /// Streamから切断します。
+        /// </summary>
+        public void Disconnect()
+        {
+            this.IsConnected = false;
+        }
 
-			this.OnTerminated(EventArgs.Empty);
-		}
+        /// <summary>
+        /// Streamから切断します。
+        /// </summary>
+        public void Dispose()
+        {
+            this.IsConnected = false;
+        }
 
-		/// <summary>
-		/// Streamから切断します。
-		/// </summary>
-		public void Disconnect()
-		{
-			this.IsConnected = false;
-		}
+        private void StreamingCallback(object sender, StreamEventArgs e)
+        {
+            this.Deley = 0;
+            var json = Twitch.Utility.DynamicJson.Parse(e.Data);
 
-		private void StreamingCallback(object sender, StreamEventArgs e)
-		{
-			this.Deley = 0;
-			var json = Twitch.Utility.DynamicJson.Parse(e.Data);
+            // Status deleted
+            if (json.IsDefined("delete"))
+            {
+                this.OnStatusDeletion(
+                    new StatusDeletionEventArgs
+                    {
+                        ID = (Int64)json["delete"]["status"]["id"],
+                        StringID = json["delete"]["status"]["id_str"],
+                        UserID = (Int64)json["delete"]["status"]["user_id"],
+                        StringUserID = json["delete"]["status"]["user_id_str"]
+                    }
+                );
+                return;
+            }
+            // Disconnected
+            else if (json.IsDefined("disconnect"))
+            {
+                this.OnDisconnected(
+                    new DisconnectedEventArgs
+                    {
+                        Code = (int)json["code"],
+                        StreamName = json["stream_name"],
+                        Reason = json["reason"]
+                    }
+                );
+                return;
+            }
+            else
+            {
+                this.OnStreamMessaged(new StreamEventArgs(e.Data));
+            }
+        }
 
-			// Status deleted
-			if (json.IsDefined("delete"))
-			{
-				this.OnStatusDeletion(
-					new StatusDeletionEventArgs
-					{
-						ID = (Int64)json["delete"]["status"]["id"],
-						StringID = json["delete"]["status"]["id_str"],
-						UserID = (Int64)json["delete"]["status"]["user_id"],
-						StringUserID = json["delete"]["status"]["user_id_str"]
-					}
-				);
-				return;
-			}
-			// Disconnected
-			else if (json.IsDefined("disconnect"))
-			{
-				this.OnDisconnected(
-					new DisconnectedEventArgs
-					{
-						Code = (int)json["code"],
-						StreamName = json["stream_name"],
-						Reason = json["reason"]
-					}
-				);
-				return;
-			}
-			else
-			{
-				this.OnStreamMessaged(new StreamEventArgs(e.Data));
-			}
-		}
-
-		/// <summary>
-		/// 
-		/// </summary>
+        /// <summary>
+        /// 
+        /// </summary>
         ~StreamingBase()
-		{
-			Debug.WriteLine("close");
-		}
-	}
+        {
+            Debug.WriteLine("close");
+        }
+    }
 }

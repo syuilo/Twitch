@@ -1,21 +1,12 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Collections.Specialized;
-using System.IO;
-using System.Linq;
-using System.Net;
-using System.Net.Security;
-using System.Text;
-using System.Threading.Tasks;
-using Twitch.HTTP.Twitter.OAuth;
+using Twitch.Twitter.API;
 
 namespace Twitch.Streaming
 {
     /// <summary>
     /// UserStreamとの接続を行うクラスです。
     /// </summary>
-    public class UserStream : StreamingBase, IStream
+    public class UserStream : StreamingBase
     {
         #region Events
 
@@ -276,7 +267,7 @@ namespace Twitch.Streaming
         public delegate void StatusUpdatedEventHandler(object sender, StatusUpdatedEventArgs e);
 
         /// <summary>
-        /// ツイートが投稿されました。
+        /// タイムラインにツイートが投稿された際に発生します。
         /// </summary>
         public event StatusUpdatedEventHandler StatusUpdated;
 
@@ -346,14 +337,12 @@ namespace Twitch.Streaming
 
             this.Url = "https://userstream.twitter.com/1.1/user.json";
             this.Host = "userstream.twitter.com";
-            this.Method = "GET";
+            this.Method = Methods.GET;
         }
 
         /// <summary>
-        /// イベントの振り分けなどを行います。
+        /// イベントの振り分けを行います。
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
         private void StreamingCallback(object sender, StreamEventArgs e)
         {
             var json = Twitch.Utility.DynamicJson.Parse(e.Data);

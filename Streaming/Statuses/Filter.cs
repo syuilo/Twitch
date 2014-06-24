@@ -4,10 +4,11 @@ using System.Collections.Specialized;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Twitch.Twitter.API;
 
 namespace Twitch.Streaming.Statuses
 {
-    public class Filter : StreamingBase, IStream
+    public class Filter : StreamingBase
 	{
 		#region Events
 
@@ -50,7 +51,7 @@ namespace Twitch.Streaming.Statuses
 
 			this.Url = "https://stream.twitter.com/1.1/statuses/filter.json";
 			this.Host = "stream.twitter.com";
-			this.Method = "POST";
+            this.Method = Methods.POST;
 
 			StringDictionary query = new StringDictionary();
 

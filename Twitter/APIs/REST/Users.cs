@@ -52,7 +52,9 @@ namespace Twitch.Twitter.APIs.REST
         /// <param name="user_id">スパム報告されるユーザーのID。</param>
         /// <param name="screen_name">スパム報告されるユーザーのScreenName。</param>
         /// <returns>スパム報告されたユーザー</returns>
-        public static async Task<Twitter.User> ReportSpam(TwitterContext twitterContext, string user_id = null, string screen_name = null)
+        public static async Task<Twitter.User> ReportSpam(TwitterContext twitterContext,
+            string user_id = null,
+            string screen_name = null)
         {
             StringDictionary query = new StringDictionary();
 

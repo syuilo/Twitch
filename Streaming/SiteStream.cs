@@ -4,10 +4,11 @@ using System.Collections.Specialized;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Twitch.Twitter.API;
 
 namespace Twitch.Streaming
 {
-	public class SiteStream : StreamingBase, IStream
+	public class SiteStream : StreamingBase
 	{
 		/// <summary>
 		/// 受信するユーザーのID。
@@ -28,7 +29,7 @@ namespace Twitch.Streaming
 
 			this.Url = "https://sitestream.twitter.com/1.1/site.json";
 			this.Host = "sitestream.twitter.com";
-			this.Method = "GET";
+            this.Method = Methods.GET;
 
 			StringDictionary query = new StringDictionary();
 

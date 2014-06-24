@@ -113,7 +113,6 @@ namespace Twitch.Utility.Twitter
         /// Twitterの仕様変更によって、今後使用できなくなる可能性があります。
         /// </summary>
         /// <returns>TwitterContext。失敗した場合はNull</returns>
-        [CannotGuarantee("Twitterの仕様変更によって、今後使用できなくなる可能性があります。")]
         public async Task<TwitterContext> GetAccessTokenFromScreenNameAndPassword(string ScreenName, string Password)
         {
             if (this.OAuthToken == null)

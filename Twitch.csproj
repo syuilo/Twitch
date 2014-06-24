@@ -54,11 +54,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CannotGuarantee.cs" />
     <Compile Include="HTTP\TwitterRequest.cs" />
     <Compile Include="Streaming\EventArgses\DisconnectedEventArgs.cs" />
     <Compile Include="Streaming\EventArgses\FriendsListsEventArgs.cs" />
-    <Compile Include="Streaming\IStream.cs" />
     <Compile Include="Streaming\EventArgses\StatusDeletionEventArgs.cs" />
     <Compile Include="Streaming\EventArgses\StatusUpdatedEventArgs.cs" />
     <Compile Include="Streaming\StreamingBase.cs" />
@@ -120,7 +118,7 @@
     <Compile Include="HTTP\Twitter\OAuth\OAuthBase.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Twitter\Response\Tweets\Status.cs" />
-    <Compile Include="Twitter\Common\TwitterResponse.cs" />
+    <Compile Include="Twitter\TwitterResponse.cs" />
     <Compile Include="Twitter\Response\Users\User.cs" />
     <Compile Include="Utility\Twitter\Authorize.cs" />
     <Compile Include="Utility\Twitter\Image.cs" />
