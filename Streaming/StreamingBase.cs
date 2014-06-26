@@ -374,8 +374,8 @@ namespace Twitch.Streaming
                             }
                         }
                     }
-                }
-            }
+                } // 'sr using end
+            } // 'rs and 'st using end
 
             request.Abort();
 

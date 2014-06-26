@@ -98,9 +98,7 @@ namespace Twitch.HTTP.Twitter
         /// <returns>レスポンス</returns>
         public async Task<string> Request()
         {
-            string response = string.Empty;
             string data = null;
-
             string url = this.Url.ToString();
 
             Debug.WriteLine("\r\n--------------------\r\n## リクエストを作成します > " + this.Method + " " + this.Url);
@@ -121,25 +119,25 @@ namespace Twitch.HTTP.Twitter
             }
 
             // Create request
-            var Request = (HttpWebRequest)WebRequest.Create(url);
+            var request = (HttpWebRequest)WebRequest.Create(url);
 
             if (this.Proxy != null)
-                Request.Proxy = new WebProxy(this.Proxy);
+                request.Proxy = new WebProxy(this.Proxy);
 
-            Request.Method = Method.ToString();
-            Request.ContentType = "application/x-www-form-urlencoded";
-            Request.Host = "api.twitter.com";
-            Request.Headers["Authorization"] =
+            request.Method = Method.ToString();
+            request.ContentType = "application/x-www-form-urlencoded";
+            request.Host = "api.twitter.com";
+            request.Headers["Authorization"] =
                 OAuth.Core.GenerateRequestHeader(
                     this.TwitterContext, Method.ToString(), this.Url.ToString(), this.Parameter);
 
             if (!String.IsNullOrEmpty(this.UserAgent))
-                Request.UserAgent = this.UserAgent;
+                request.UserAgent = this.UserAgent;
 
             if (Method == Methods.POST && this.Parameter != null)
             {
                 // Write request data
-                using (StreamWriter streamWriter = new StreamWriter(await Request.GetRequestStreamAsync()))
+                using (StreamWriter streamWriter = new StreamWriter(await request.GetRequestStreamAsync()))
                     await streamWriter.WriteAsync(data);
             }
 
@@ -148,15 +146,16 @@ namespace Twitch.HTTP.Twitter
             try
             {
                 // Send request
-                var Response = (HttpWebResponse)await Request.GetResponseAsync();
+                var response = (HttpWebResponse)await request.GetResponseAsync();
 
                 // Read response
-                using (StreamReader ResponseDataStream = new StreamReader(Response.GetResponseStream()))
-                    response = await ResponseDataStream.ReadToEndAsync();
+                using (StreamReader responseDataStream = new StreamReader(response.GetResponseStream()))
+                {
+                    var receive = await responseDataStream.ReadToEndAsync();
 
-                Debug.WriteLine("## " + Response.StatusCode + " " + Response.StatusDescription + " : " + response + "\r\n--------------------");
-
-                return response;
+                    Debug.WriteLine("## " + response.StatusCode + " " + response.StatusDescription + " : " + receive + "\r\n--------------------");
+                    return receive;
+                }
             }
             catch (System.Net.WebException ex)
             {

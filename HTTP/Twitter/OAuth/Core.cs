@@ -35,13 +35,13 @@ namespace Twitch.HTTP.Twitter.OAuth
             AddPercentEncodedItem(paramDictionary, "oauth_signature", GenerateSignature(context, method, requestUrl, nonce, "HMAC-SHA1", timeStamp, "1.0", queryDictionary));
             AddPercentEncodedItem(paramDictionary, "oauth_signature_method", "HMAC-SHA1");
             AddPercentEncodedItem(paramDictionary, "oauth_timestamp", timeStamp);
-            AddPercentEncodedItem(paramDictionary, "oauth_token", context.AccessToken);
+            AddPercentEncodedItem(paramDictionary, "oauth_token", context.AccessToken != null ? context.AccessToken : null);
             AddPercentEncodedItem(paramDictionary, "oauth_version", "1.0");
 
             foreach (var kvp in paramDictionary)
             {
                 if (kvp.Value != null)
-                    headerParams += (headerParams.Length > 0 ? ", " : string.Empty) + kvp.Key + "=\"" + kvp.Value + "\"";
+                    headerParams += (headerParams.Length > 0 ? ", " : String.Empty) + kvp.Key + "=\"" + kvp.Value + "\"";
             }
 
             header = "OAuth " + headerParams;
@@ -71,7 +71,7 @@ namespace Twitch.HTTP.Twitter.OAuth
             parameters.Add("oauth_nonce", nonce);
             parameters.Add("oauth_signature_method", signatureMethod);
             parameters.Add("oauth_timestamp", timeStamp);
-            parameters.Add("oauth_token", context.AccessToken);
+            parameters.Add("oauth_token", context.AccessToken != null ? context.AccessToken : null);
             parameters.Add("oauth_version", oAuthVersion);
 
             // Add parameters to request parameter
@@ -114,7 +114,7 @@ namespace Twitch.HTTP.Twitter.OAuth
 
             var hmacsha1 = new HMACSHA1(Encoding.ASCII.GetBytes(
                 UrlEncode(context.ConsumerSecret, Encoding.UTF8) +
-                "&" + ((context.AccessTokenSecret != null) ? UrlEncode(context.AccessTokenSecret, Encoding.UTF8) : null)));
+                "&" + (!String.IsNullOrEmpty(context.AccessTokenSecret) ? UrlEncode(context.AccessTokenSecret, Encoding.UTF8) : String.Empty)));
 
             // Convert to Base64
             string signature = Convert.ToBase64String(hmacsha1.ComputeHash(Encoding.ASCII.GetBytes(signatureBaseString)));

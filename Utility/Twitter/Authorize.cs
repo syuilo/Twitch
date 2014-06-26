@@ -51,10 +51,10 @@ namespace Twitch.Utility.Twitter
         /// </summary>
         /// <param name="ConsumerKey"></param>
         /// <param name="ConsumerSecret"></param>
-        public Authorize(string ConsumerKey, string ConsumerSecret)
+        public Authorize(string consumerKey, string consumerSecret)
         {
-            this.ConsumerKey = ConsumerKey;
-            this.ConsumerSecret = ConsumerSecret;
+            this.ConsumerKey = consumerKey;
+            this.ConsumerSecret = consumerSecret;
         }
 
         /// <summary>
@@ -65,8 +65,8 @@ namespace Twitch.Utility.Twitter
         {
             var tw = new Twitch.TwitterContext(this.ConsumerKey, this.ConsumerSecret);
 
-            try
-            {
+            //try
+            //{
                 string res = await Twitch.Twitter.APIs.REST.OAuth.request_token(tw);
 
                 if (!string.IsNullOrEmpty(res))
@@ -78,11 +78,11 @@ namespace Twitch.Utility.Twitter
                 }
                 else
                     return false;
-            }
-            catch
-            {
-                return false;
-            }
+            //}
+            //catch
+            //{
+            //    return false;
+            //}
         }
 
         /// <summary>
