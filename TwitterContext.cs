@@ -101,7 +101,7 @@ namespace Twitch
         public async Task<string> Reuqest(
             Twitter.API.Methods method, System.Uri url, StringDictionary parameter = null)
         {
-            return await new HTTP.Twitter.TwitterRequest(
+            return await new TwitterRequest(
                 this, method, url, parameter).Request();
         }
 

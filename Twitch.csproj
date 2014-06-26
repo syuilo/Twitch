@@ -58,7 +58,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="HTTP\TwitterRequest.cs" />
+    <Compile Include="TwitterRequest.cs" />
     <Compile Include="Streaming\EventArgses\DisconnectedEventArgs.cs" />
     <Compile Include="Streaming\EventArgses\FriendsListsEventArgs.cs" />
     <Compile Include="Streaming\EventArgses\StatusDeletionEventArgs.cs" />
@@ -116,18 +116,16 @@
     <Compile Include="Utility\AnalyzeUrlQuery.cs" />
     <Compile Include="Utility\Image\Convert.cs" />
     <Compile Include="Utility\JSON\DynamicJson.cs" />
-    <Compile Include="HTTP\Twitter\OAuth\Core.cs" />
+    <Compile Include="Net\OAuth\Core.cs" />
     <Compile Include="Utility\JSON\JsonParser.cs" />
     <Compile Include="TwitterContext.cs" />
-    <Compile Include="HTTP\Twitter\OAuth\OAuthBase.cs" />
+    <Compile Include="Net\OAuth\OAuthBase.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Twitter\Response\Tweets\Status.cs" />
     <Compile Include="Twitter\TwitterResponse.cs" />
     <Compile Include="Twitter\Response\Users\User.cs" />
-    <Compile Include="Utility\Twitter\Authorize.cs" />
+    <Compile Include="Twitter\Authorize.cs" />
     <Compile Include="Utility\Twitter\Image.cs" />
-    <Compile Include="Vermillion\Utility\RandomString.cs" />
-    <Compile Include="Vermillion\Utility\RandomText.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="LICENSE.txt">

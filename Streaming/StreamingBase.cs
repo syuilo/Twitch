@@ -10,7 +10,7 @@ using System.Net.Security;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 
-using Twitch.HTTP.Twitter.OAuth;
+using Twitch.Net.OAuth;
 using Twitch.Twitter.API;
 
 namespace Twitch.Streaming

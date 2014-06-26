@@ -8,9 +8,10 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Diagnostics;
 
+using Twitch.Net.OAuth;
 using Twitch.Twitter.API;
 
-namespace Twitch.HTTP.Twitter
+namespace Twitch
 {
     /// <summary>
     /// Twitterへのリクエストを作成します。
@@ -106,9 +107,9 @@ namespace Twitch.HTTP.Twitter
             if (this.Parameter != null)
             {
                 var para = from DictionaryEntry k in this.Parameter
-                           select (k.Value != null)
-                           ? OAuth.Core.UrlEncode((string)k.Key, Encoding.UTF8) + '=' + OAuth.Core.UrlEncode((string)k.Value, Encoding.UTF8)
-                           : null;
+                    select (k.Value != null)
+                    ? Core.UrlEncode((string)k.Key, Encoding.UTF8) + '=' + Core.UrlEncode((string)k.Value, Encoding.UTF8)
+                    : null;
 
                 data = String.Join("&", para.ToArray());
 
@@ -128,7 +129,7 @@ namespace Twitch.HTTP.Twitter
             request.ContentType = "application/x-www-form-urlencoded";
             request.Host = "api.twitter.com";
             request.Headers["Authorization"] =
-                OAuth.Core.GenerateRequestHeader(
+                Core.GenerateRequestHeader(
                     this.TwitterContext, Method.ToString(), this.Url.ToString(), this.Parameter);
 
             if (!String.IsNullOrEmpty(this.UserAgent))

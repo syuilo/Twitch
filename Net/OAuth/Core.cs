@@ -6,8 +6,11 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Diagnostics;
 
-namespace Twitch.HTTP.Twitter.OAuth
+namespace Twitch.Net.OAuth
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public static class Core
     {
         /// <summary>

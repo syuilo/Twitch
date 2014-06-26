@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-using Twitch.HTTP.Twitter;
+using Twitch.Net;
 
 namespace Twitch.Twitter.APIs.REST
 {
