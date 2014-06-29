@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace Twitch.Twitter
 {
 	/// <summary>
-	/// Twitterのユーザー(アカウント)です。
+	/// Twitterのユーザー(アカウント)を表します。
 	/// </summary>
 	[Serializable]
 	public class User : Response.Users.User

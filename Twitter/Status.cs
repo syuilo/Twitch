@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace Twitch.Twitter
 {
 	/// <summary>
-	/// TwitterのStatus(ツイート,つぶやき,投稿)です。
+	/// TwitterのStatus(ツイート)を表します。
 	/// </summary>
 	public class Status : Twitter.Response.Tweets.Status
 	{

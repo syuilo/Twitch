@@ -58,18 +58,24 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Filter\Filterize.cs" />
+    <Compile Include="Filter\Filter.cs" />
+    <Compile Include="Filter\FilterGroup.cs" />
+    <Compile Include="Filter\Filters\Text\Text.cs" />
+    <Compile Include="Filter\IFilter.cs" />
+    <Compile Include="Filter\QueryException.cs" />
+    <Compile Include="Filter\TextFilterBase.cs" />
     <Compile Include="TwitterRequest.cs" />
-    <Compile Include="Streaming\EventArgses\DisconnectedEventArgs.cs" />
-    <Compile Include="Streaming\EventArgses\FriendsListsEventArgs.cs" />
-    <Compile Include="Streaming\EventArgses\StatusDeletionEventArgs.cs" />
-    <Compile Include="Streaming\EventArgses\StatusUpdatedEventArgs.cs" />
-    <Compile Include="Streaming\StreamingBase.cs" />
-    <Compile Include="Streaming\EventArgses\StreamEventArgs.cs" />
-    <Compile Include="Streaming\EventArgses\StreamEventEventArgs.cs" />
-    <Compile Include="Streaming\SiteStream.cs" />
-    <Compile Include="Streaming\Statuses\Filter.cs" />
-    <Compile Include="Streaming\UserStream.cs" />
-    <Compile Include="Twitter\Api.cs" />
+    <Compile Include="Twitter\APIs\Streaming\EventArgses\DisconnectedEventArgs.cs" />
+    <Compile Include="Twitter\APIs\Streaming\EventArgses\FriendsListsEventArgs.cs" />
+    <Compile Include="Twitter\APIs\Streaming\EventArgses\StatusDeletionEventArgs.cs" />
+    <Compile Include="Twitter\APIs\Streaming\EventArgses\StatusUpdatedEventArgs.cs" />
+    <Compile Include="Twitter\APIs\Streaming\StreamingBase.cs" />
+    <Compile Include="Twitter\APIs\Streaming\EventArgses\StreamEventArgs.cs" />
+    <Compile Include="Twitter\APIs\Streaming\EventArgses\StreamEventEventArgs.cs" />
+    <Compile Include="Twitter\APIs\Streaming\Site\SiteStream.cs" />
+    <Compile Include="Twitter\APIs\Streaming\Statuses\Filter.cs" />
+    <Compile Include="Twitter\APIs\Streaming\User\UserStream.cs" />
     <Compile Include="Twitter\APIs\REST\Account.cs" />
     <Compile Include="Twitter\APIs\REST\Blocks.cs" />
     <Compile Include="Twitter\APIs\REST\DirectMessages.cs" />
@@ -88,14 +94,12 @@
     <Compile Include="Twitter\APIs\REST\Statuses.cs" />
     <Compile Include="Twitter\APIs\REST\Trends.cs" />
     <Compile Include="Twitter\APIs\REST\Users.cs" />
-    <Compile Include="Twitter\APIs\Streaming\Streaming.cs" />
     <Compile Include="Twitter\APIs\Unused.cs" />
-    <Compile Include="Twitter\API\ApiAttribute.cs" />
     <Compile Include="Twitter\API\Methods.cs" />
     <Compile Include="Twitter\API\Urls.cs" />
     <Compile Include="Twitter\Application\Key.cs" />
     <Compile Include="Twitter\Application\OfficialKeys.cs" />
-    <Compile Include="Twitter\PublicUser.cs" />
+    <Compile Include="Twitter\Commands.cs" />
     <Compile Include="Twitter\Response\Entities\Entities.cs" />
     <Compile Include="Twitter\Response\Other\Annotations.cs" />
     <Compile Include="Twitter\Response\Other\Geo.cs" />
@@ -110,7 +114,6 @@
     <Compile Include="Twitter\Response\Tweets\Contributors.cs" />
     <Compile Include="Twitter\Response\Tweets\Coordinates.cs" />
     <Compile Include="Twitter\Status.cs" />
-    <Compile Include="Twitter\APIs\UnOfficial.cs" />
     <Compile Include="Twitter\TwitterBase.cs" />
     <Compile Include="Twitter\User.cs" />
     <Compile Include="Utility\AnalyzeUrlQuery.cs" />
@@ -137,8 +140,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Twitter\APIs\Streaming\Public\" />
-    <Folder Include="Twitter\APIs\Streaming\Site\" />
-    <Folder Include="Twitter\APIs\Streaming\User\" />
     <Folder Include="Twitter\APIs\UnOfficial\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

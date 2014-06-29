@@ -62,7 +62,7 @@ namespace Twitch.Twitter
 
             //try
             //{
-            string res = await Twitch.Twitter.APIs.REST.OAuth.request_token(tw);
+            string res = await Twitch.Twitter.APIs.REST.Oauth.RequestToken(tw);
 
             if (!string.IsNullOrEmpty(res))
             {
@@ -81,7 +81,7 @@ namespace Twitch.Twitter
         }
 
         /// <summary>
-        /// Authorize用URLを取得します。
+        /// Authorize URLを取得します。
         /// </summary>
         /// <returns>URL</returns>
         public Uri GetAuthorizeUrl()
@@ -161,7 +161,7 @@ namespace Twitch.Twitter
         public async Task<TwitterContext> GetAccessTokenFromPinCode(string PIN)
         {
             var tw = new Twitch.TwitterContext(this.ConsumerKey, this.ConsumerSecret, this.OAuthToken, this.OAuthTokenSecret);
-            string res = await Twitch.Twitter.APIs.REST.OAuth.access_token(tw, PIN);
+            string res = await Twitch.Twitter.APIs.REST.Oauth.AccessToken(tw, PIN);
 
             if (!string.IsNullOrEmpty(res))
             {

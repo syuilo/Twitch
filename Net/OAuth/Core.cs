@@ -16,7 +16,7 @@ namespace Twitch.Net.OAuth
         /// <summary>
         /// リクエスト ヘッダー文字列を生成します。
         /// </summary>
-        /// <param name="context"></param>
+        /// <param name="context">リクエストに使用されるトークンセット。</param>
         /// <param name="method"></param>
         /// <param name="requestUrl"></param>
         /// <param name="queryDictionary"></param>
@@ -56,7 +56,7 @@ namespace Twitch.Net.OAuth
         /// <summary>
         /// シグネチャ文字列を生成します。
         /// </summary>
-        /// <param name="context"></param>
+        /// <param name="context">リクエストに使用されるトークンセット。</param>
         /// <param name="method">リクエストのメソッド。</param>
         /// <param name="url">リクエストのURL。</param>
         /// <param name="nonce">ランダムな文字列。</param>
