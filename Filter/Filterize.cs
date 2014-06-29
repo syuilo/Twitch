@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 
 namespace Twitch.Filter
 {
@@ -61,7 +62,7 @@ namespace Twitch.Filter
                 if (pos >= this.Query.Length)
                     throw new QueryException("クエリが不適切です。オブジェクトが終了していません。");
 
-                System.Diagnostics.Debug.WriteLine(this.Query[pos]);
+                System.Diagnostics.Debug.Write(this.Query[pos]);
 
                 switch (this.Query[pos])
                 {
@@ -83,11 +84,18 @@ namespace Twitch.Filter
                         break;
                     case ':':
                         break;
+
+                    case '!': // not
+                        logicalOperators.Add('!');
+                        break;
                     case '&': // and
                         logicalOperators.Add('&');
                         break;
                     case '|': // or
                         logicalOperators.Add('|');
+                        break;
+                    case '^': // xor
+                        logicalOperators.Add('^');
                         break;
 
                     default:
@@ -108,11 +116,17 @@ namespace Twitch.Filter
 
                     switch (logicalOperators[j])
                     {
-                        case '&':
+                        //case '!':
+                        //    result = (!result);
+                        //    break;
+                        case '&': // and
                             result = (a && b);
                             break;
-                        case '|':
+                        case '|': // or
                             result = (a || b);
+                            break;
+                        case '^': // xor
+                            result = (a ^ b);
                             break;
                     }
                 }
@@ -124,16 +138,18 @@ namespace Twitch.Filter
         public bool AnalyzeFilter()
         {
             string filetrId = "";
+            string filterSymbol = "";
             string filterArg = "";
 
             bool find = false;
             System.Diagnostics.Debug.WriteLine("# フィルタIdを走査します。");
+
             while (!find)  // フィルタIDを走査
             {
                 pos++;
 
                 if (pos >= this.Query.Length)
-                    throw new QueryException("クエリが不適切です。フィルタが終了していません。");
+                    throw new QueryException("クエリが不適切です。フィルタ " + filetrId + " が終了していません。");
 
                 switch (this.Query[pos - 1])
                 {
@@ -144,15 +160,52 @@ namespace Twitch.Filter
                         find = true;
                         break;
                     case '}':
-                        throw new QueryException("フィルタに引数がありません。フィルタの引数に出会う前に、オブジェクトが終了しました。");
+                        throw new QueryException("フィルタ " + filetrId + " に引数がありません。フィルタの引数に出会う前に、オブジェクトが終了しました。");
                     default:
-                        filetrId += this.Query[pos - 1];
+                        if (Regex.IsMatch(this.Query[pos - 1].ToString(), "[a-z A-Z _]"))
+                            filetrId += this.Query[pos - 1];
+                        else
+                            find = true;
                         break;
                 }
             }
 
             pos--;
-            System.Diagnostics.Debug.WriteLine("# フィルタIdは " + filetrId + " です。引数の走査を開始します。");
+            //pos--;
+            System.Diagnostics.Debug.WriteLine("# フィルタIdは " + filetrId + " です。演算子の走査を開始します。");
+
+            find = false;
+
+            while (!find)  // フィルタシンボルを走査
+            {
+                pos++;
+
+                if (pos >= this.Query.Length)
+                    throw new QueryException("クエリが不適切です。フィルタ " + filetrId + " が終了していません。");
+
+                switch (this.Query[pos - 1])
+                {
+                    case ' ':
+                        if (filterSymbol.Length > 0)
+                            find = true;
+                        break;
+                    case '"':
+                        find = true;
+                        break;
+                    case '}':
+                        throw new QueryException("フィルタ " + filetrId + " に演算子がありません。フィルタの演算子に出会う前に、オブジェクトが終了しました。");
+                    default:
+                        filterSymbol += this.Query[pos - 1];
+                        break;
+                }
+            }
+
+            if (String.IsNullOrEmpty(filterSymbol))
+                throw new QueryException("フィルタ " + filetrId + " に演算子がありません。");
+
+            pos--;
+            pos--;
+            System.Diagnostics.Debug.WriteLine("# フィルタシンボルは " + filterSymbol + " です。引数の走査を開始します。");
 
             int dcCount = 0;
             find = false;
@@ -176,7 +229,7 @@ namespace Twitch.Filter
                         break;
                     case '}':
                         if (dcCount == 0)
-                            throw new QueryException("フィルタに引数がありません。フィルタの引数に出会う前に、オブジェクトが終了しました。");
+                            throw new QueryException("フィルタに " + filetrId + " 引数がありません。フィルタの引数に出会う前に、オブジェクトが終了しました。");
                         else if (dcCount == 1)
                             if (filterArg.Length > 0)
                                 throw new QueryException("引数が閉じられていません。引数はダブルクォーテーション '\"' で終わらなければなりません。");
@@ -197,19 +250,14 @@ namespace Twitch.Filter
             switch (filetrId) // フィルタに通す(作成中)
             {
                 case "text":
-                    return true;
-                    break;
+                    return new Filters.Text.Text(this.Input).Verify(filterArg, filterSymbol);
                 case "screen_name":
                     return true;
-                    break;
                 case "name":
                     return false;
-                    break;
                 default:
                     throw new QueryException("フィルタが不適切です。ID \"" + filetrId + "\" に一致するフィルタがありません。");
             }
-
-            throw new ApplicationException("a");
         }
     }
 }

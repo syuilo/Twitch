@@ -58,10 +58,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Filter\FilterException.cs" />
     <Compile Include="Filter\Filterize.cs" />
     <Compile Include="Filter\Filter.cs" />
-    <Compile Include="Filter\FilterGroup.cs" />
     <Compile Include="Filter\Filters\Text\Text.cs" />
+    <Compile Include="Filter\FilterType.cs" />
     <Compile Include="Filter\IFilter.cs" />
     <Compile Include="Filter\QueryException.cs" />
     <Compile Include="Filter\TextFilterBase.cs" />

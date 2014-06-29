@@ -8,7 +8,9 @@ namespace Twitch.Filter
 {
     public interface IFilter
     {
-        string Identification { get;}
-        bool Verify(string arg);
+        string Identification { get; }
+        string Description { get; }
+        FilterType Type { get; }
+        bool Verify(string arg, string symbol);
     }
 }

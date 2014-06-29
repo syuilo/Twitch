@@ -6,8 +6,11 @@ using System.Threading.Tasks;
 
 namespace Twitch.Filter
 {
-    public class FilterGroup
+    public class FilterException : Exception
     {
-
+        public FilterException(string message)
+            : base(message)
+        {
+        }
     }
 }

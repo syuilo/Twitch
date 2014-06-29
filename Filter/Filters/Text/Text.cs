@@ -15,9 +15,17 @@
             }
         }
 
-        public bool Verify(string arg)
+        public string Description
         {
-            return this.Match(this.Input.Text, arg);
+            get
+            {
+                return "ツイート本文";
+            }
+        }
+
+        public bool Verify(string arg, string symbol)
+        {
+            return this.Match(this.Input.Text, arg, symbol, this.Identification);
         }
     }
 }
