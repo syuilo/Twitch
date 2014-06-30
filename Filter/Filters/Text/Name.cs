@@ -1,17 +1,17 @@
 ﻿namespace Twitch.Filter.Filters.Text
 {
     /// <summary>
-    /// ユーザーのScreenNameをフィルタします。
+    /// ユーザー名をフィルタします。
     /// </summary>
-    public class ScreenName : TextFilterBase, IFilter
+    public class Name : TextFilterBase, IFilter
     {
-        public ScreenName(Twitter.Status status) : base(status) { }
+        public Name(Twitter.Status status) : base(status) { }
 
         public string Identification
         {
             get
             {
-                return "screen_name";
+                return "name";
             }
         }
 
@@ -19,13 +19,13 @@
         {
             get
             {
-                return "ユーザーのScreenName";
+                return "ユーザー名";
             }
         }
 
         public bool Verify(string arg, string symbol)
         {
-            return this.Match(this.Input.User.ScreenName, arg, symbol, this.Identification);
+            return this.Match(this.Input.User.Name, arg, symbol, this.Identification);
         }
     }
 }

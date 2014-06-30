@@ -3,7 +3,7 @@
     public enum FilterType
     {
         Text,
-        Number,
+        Numerical,
         Boolean
     }
 }

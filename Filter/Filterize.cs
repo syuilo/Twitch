@@ -8,12 +8,18 @@ namespace Twitch.Filter
     {
         private int pos = 0;
 
+        /// <summary>
+        /// 対象の Twitter.Status 。
+        /// </summary>
         public Twitter.Status Input
         {
             get;
             set;
         }
 
+        /// <summary>
+        /// ツイートに対するクエリ文字列。
+        /// </summary>
         public string Query
         {
             get;
@@ -26,6 +32,10 @@ namespace Twitch.Filter
             this.Query = query;
         }
 
+        /// <summary>
+        /// クエリを検証します。
+        /// </summary>
+        /// <returns>結果</returns>
         public bool Analyze()
         {
             this.pos = 0;
@@ -48,7 +58,7 @@ namespace Twitch.Filter
             throw new QueryException("1つ以上のフィルターを検証しませんでした。");
         }
 
-        public bool AnalyzeObject()
+        private bool AnalyzeObject()
         {
             var results = new List<bool>();
             var logicalOperators = new List<char>();
@@ -135,11 +145,9 @@ namespace Twitch.Filter
             return result;
         }
 
-        public bool AnalyzeFilter()
+        private bool AnalyzeFilter()
         {
-            string filterId = String.Empty;
-            string filterSymbol = String.Empty;
-            string filterArg = String.Empty;
+            string filterId = String.Empty, filterSymbol = String.Empty, filterArg = String.Empty;
 
             bool findId = false;
             System.Diagnostics.Debug.WriteLine("# フィルタIdを走査します。");
@@ -219,7 +227,18 @@ namespace Twitch.Filter
 
                     case '\\':  // エスケープ文字
                         pos++;
-                        filterArg += this.Query[pos];
+                        switch (this.Query[pos])
+                        {
+                            case 'n':
+                                filterArg += "\n";
+                                break;
+                            case 'r':
+                                filterArg += "\r";
+                                break;
+                            default:
+                                filterArg += this.Query[pos];
+                                break;
+                        }
                         break;
                     case '"':
                         dcCount++;
@@ -253,7 +272,9 @@ namespace Twitch.Filter
                 case "screen_name":
                     return new Filters.Text.ScreenName(this.Input).Verify(filterArg, filterSymbol);
                 case "name":
-                    return false;
+                    return new Filters.Text.Name(this.Input).Verify(filterArg, filterSymbol);
+                case "favorite_count":
+                    return new Filters.Numerical.FavoriteCount(this.Input).Verify(filterArg, filterSymbol);
                 default:
                     throw new QueryException("フィルタが不適切です。ID \"" + filterId + "\" に一致するフィルタがありません。");
             }

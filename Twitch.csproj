@@ -61,10 +61,13 @@
     <Compile Include="Filter\FilterException.cs" />
     <Compile Include="Filter\Filterize.cs" />
     <Compile Include="Filter\Filter.cs" />
+    <Compile Include="Filter\Filters\Numerical\FavoriteCount.cs" />
+    <Compile Include="Filter\Filters\Text\Name.cs" />
     <Compile Include="Filter\Filters\Text\ScreenName.cs" />
     <Compile Include="Filter\Filters\Text\Text.cs" />
     <Compile Include="Filter\FilterType.cs" />
     <Compile Include="Filter\IFilter.cs" />
+    <Compile Include="Filter\NumericalFilterBase.cs" />
     <Compile Include="Filter\QueryException.cs" />
     <Compile Include="Filter\TextFilterBase.cs" />
     <Compile Include="TwitterRequest.cs" />
@@ -141,6 +144,7 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Filter\Filters\Boolean\" />
     <Folder Include="Twitter\APIs\Streaming\Public\" />
     <Folder Include="Twitter\APIs\UnOfficial\" />
   </ItemGroup>

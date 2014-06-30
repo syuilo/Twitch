@@ -28,6 +28,7 @@ namespace Twitch.Twitter.Response.Tweets
 			this.Entities = new Entities.Entities(this.Json["entities"].ToString());
 			this.Text = this.Json["text"];
 			this.RetweetCount = this.Json["retweet_count"];
+            this.FavoriteCount = this.Json["favorite_count"];
 			this.InReplyToStatusIDstr = this.Json["in_reply_to_status_id_str"];
 			this.ID = (Int64)this.Json["id"];
 			//this.Geo = (this.Json["geo"] != null) ? new Geo(this.Json["geo"].ToString()) : null;
@@ -131,6 +132,15 @@ namespace Twitch.Twitter.Response.Tweets
 			get;
 			private set;
 		}
+
+        /// <summary>
+        /// お気に入りに登録されている数を取得します。
+        /// </summary>
+        public double FavoriteCount
+        {
+            get;
+            private set;
+        }
 
 		/// <summary>
 		/// 返信元になるツイートのIDを取得します。<para />
