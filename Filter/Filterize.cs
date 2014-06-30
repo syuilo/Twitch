@@ -137,63 +137,62 @@ namespace Twitch.Filter
 
         public bool AnalyzeFilter()
         {
-            string filetrId = "";
-            string filterSymbol = "";
-            string filterArg = "";
+            string filterId = String.Empty;
+            string filterSymbol = String.Empty;
+            string filterArg = String.Empty;
 
-            bool find = false;
+            bool findId = false;
             System.Diagnostics.Debug.WriteLine("# フィルタIdを走査します。");
 
-            while (!find)  // フィルタIDを走査
+            while (!findId)  // フィルタIDを走査
             {
                 pos++;
 
-                if (pos >= this.Query.Length)
-                    throw new QueryException("クエリが不適切です。フィルタ " + filetrId + " が終了していません。");
+                if (pos > this.Query.Length)
+                    throw new QueryException("クエリが不適切です。フィルタ " + filterId + " が終了していません。");
 
                 switch (this.Query[pos - 1])
                 {
                     case ' ':
-                        find = true;
+                        findId = true;
                         break;
                     case ':':
-                        find = true;
+                        findId = true;
                         break;
                     case '}':
-                        throw new QueryException("フィルタ " + filetrId + " に引数がありません。フィルタの引数に出会う前に、オブジェクトが終了しました。");
+                        throw new QueryException("フィルタ " + filterId + " に引数がありません。フィルタの引数に出会う前に、オブジェクトが終了しました。");
                     default:
                         if (Regex.IsMatch(this.Query[pos - 1].ToString(), "[a-z A-Z _]"))
-                            filetrId += this.Query[pos - 1];
+                            filterId += this.Query[pos - 1];
                         else
-                            find = true;
+                            findId = true;
                         break;
                 }
             }
 
+            System.Diagnostics.Debug.WriteLine("# フィルタIdは " + filterId + " です。演算子の走査を開始します。");
             pos--;
-            //pos--;
-            System.Diagnostics.Debug.WriteLine("# フィルタIdは " + filetrId + " です。演算子の走査を開始します。");
 
-            find = false;
+            bool findSymbol = false;
 
-            while (!find)  // フィルタシンボルを走査
+            while (!findSymbol)  // フィルタシンボルを走査
             {
                 pos++;
 
                 if (pos >= this.Query.Length)
-                    throw new QueryException("クエリが不適切です。フィルタ " + filetrId + " が終了していません。");
+                    throw new QueryException("クエリが不適切です。フィルタ " + filterId + " が終了していません。");
 
                 switch (this.Query[pos - 1])
                 {
                     case ' ':
                         if (filterSymbol.Length > 0)
-                            find = true;
+                            findSymbol = true;
                         break;
                     case '"':
-                        find = true;
+                        findSymbol = true;
                         break;
                     case '}':
-                        throw new QueryException("フィルタ " + filetrId + " に演算子がありません。フィルタの演算子に出会う前に、オブジェクトが終了しました。");
+                        throw new QueryException("フィルタ " + filterId + " に演算子がありません。フィルタの演算子に出会う前に、オブジェクトが終了しました。");
                     default:
                         filterSymbol += this.Query[pos - 1];
                         break;
@@ -201,15 +200,15 @@ namespace Twitch.Filter
             }
 
             if (String.IsNullOrEmpty(filterSymbol))
-                throw new QueryException("フィルタ " + filetrId + " に演算子がありません。");
+                throw new QueryException("フィルタ " + filterId + " に演算子がありません。");
 
-            pos--;
-            pos--;
             System.Diagnostics.Debug.WriteLine("# フィルタシンボルは " + filterSymbol + " です。引数の走査を開始します。");
+            pos--;
+            pos--;
 
             int dcCount = 0;
-            find = false;
-            while (!find) // フィルタの引数を走査
+            bool findArg = false;
+            while (!findArg) // フィルタの引数を走査
             {
                 pos++;
 
@@ -225,11 +224,11 @@ namespace Twitch.Filter
                     case '"':
                         dcCount++;
                         if (dcCount == 2)
-                            find = true;
+                            findArg = true;
                         break;
                     case '}':
                         if (dcCount == 0)
-                            throw new QueryException("フィルタに " + filetrId + " 引数がありません。フィルタの引数に出会う前に、オブジェクトが終了しました。");
+                            throw new QueryException("フィルタに " + filterId + " 引数がありません。フィルタの引数に出会う前に、オブジェクトが終了しました。");
                         else if (dcCount == 1)
                             if (filterArg.Length > 0)
                                 throw new QueryException("引数が閉じられていません。引数はダブルクォーテーション '\"' で終わらなければなりません。");
@@ -245,18 +244,18 @@ namespace Twitch.Filter
                 }
             }
 
-            System.Diagnostics.Debug.WriteLine("# フィルタ " + filetrId + " の引数は \"" + filterArg + "\" です。検証を開始します。");
+            System.Diagnostics.Debug.WriteLine("# フィルタ " + filterId + " の引数は \"" + filterArg + "\" です。検証を開始します。");
 
-            switch (filetrId) // フィルタに通す(作成中)
+            switch (filterId) // フィルタに通す(作成中)
             {
                 case "text":
                     return new Filters.Text.Text(this.Input).Verify(filterArg, filterSymbol);
                 case "screen_name":
-                    return true;
+                    return new Filters.Text.ScreenName(this.Input).Verify(filterArg, filterSymbol);
                 case "name":
                     return false;
                 default:
-                    throw new QueryException("フィルタが不適切です。ID \"" + filetrId + "\" に一致するフィルタがありません。");
+                    throw new QueryException("フィルタが不適切です。ID \"" + filterId + "\" に一致するフィルタがありません。");
             }
         }
     }

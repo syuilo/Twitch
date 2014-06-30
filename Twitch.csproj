@@ -61,6 +61,7 @@
     <Compile Include="Filter\FilterException.cs" />
     <Compile Include="Filter\Filterize.cs" />
     <Compile Include="Filter\Filter.cs" />
+    <Compile Include="Filter\Filters\Text\ScreenName.cs" />
     <Compile Include="Filter\Filters\Text\Text.cs" />
     <Compile Include="Filter\FilterType.cs" />
     <Compile Include="Filter\IFilter.cs" />

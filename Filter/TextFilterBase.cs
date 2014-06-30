@@ -16,9 +16,18 @@
         {
             switch (symbol)
             {
+                // .  大文字小文字問わず、PにQが含まれているか
+                // :  PにQが含まれているか
+                // ::  PにQを正規表現として検証した結果
+                // ==  PとQが等しいか
+                // !=  PとQが等しくないか
+                case ".":
+                    return input.ToLower().IndexOf(arg.ToLower()) > -1;
                 case ":":
+                    return input.IndexOf(arg) > -1;
+                case "::":
                     return System.Text.RegularExpressions.Regex.IsMatch(input, arg);
-                case "=":
+                case "==":
                     return input == arg;
                 case "!=":
                     return input != arg;
