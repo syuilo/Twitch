@@ -58,6 +58,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Filter\Core\CompileException.cs" />
+    <Compile Include="Filter\Core\Compiler.cs" />
+    <Compile Include="Filter\Core\Filterizer.cs" />
+    <Compile Include="Filter\FilterCluster.cs" />
     <Compile Include="Filter\FilterException.cs" />
     <Compile Include="Filter\Filterize.cs" />
     <Compile Include="Filter\Filter.cs" />
@@ -67,9 +71,17 @@
     <Compile Include="Filter\Filters\Text\Text.cs" />
     <Compile Include="Filter\FilterType.cs" />
     <Compile Include="Filter\IFilter.cs" />
-    <Compile Include="Filter\NumericalFilterBase.cs" />
+    <Compile Include="Filter\Filters\Numerical\NumericalFilterBase.cs" />
+    <Compile Include="Filter\IFilterObject.cs" />
+    <Compile Include="Filter\Object.cs" />
+    <Compile Include="Filter\Query.cs" />
+    <Compile Include="Filter\QueryBase.cs" />
     <Compile Include="Filter\QueryException.cs" />
-    <Compile Include="Filter\TextFilterBase.cs" />
+    <Compile Include="Filter\Filters\Boolean\BooleanFilterBase.cs" />
+    <Compile Include="Filter\Filters\Text\TextFilterBase.cs" />
+    <Compile Include="Filter\LogicalOperator.cs" />
+    <Compile Include="Filter\Operator.cs" />
+    <Compile Include="Filter\TokenType.cs" />
     <Compile Include="TwitterRequest.cs" />
     <Compile Include="Twitter\APIs\Streaming\EventArgses\DisconnectedEventArgs.cs" />
     <Compile Include="Twitter\APIs\Streaming\EventArgses\FriendsListsEventArgs.cs" />
@@ -144,7 +156,6 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Filter\Filters\Boolean\" />
     <Folder Include="Twitter\APIs\Streaming\Public\" />
     <Folder Include="Twitter\APIs\UnOfficial\" />
   </ItemGroup>

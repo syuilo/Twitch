@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 
@@ -14,7 +15,7 @@ namespace Twitch.Filter
         public Twitter.Status Input
         {
             get;
-            set;
+            private set;
         }
 
         /// <summary>
@@ -26,10 +27,23 @@ namespace Twitch.Filter
             set;
         }
 
+        public Hashtable Filters
+        {
+            get;
+            set;
+        }
+
         public Filterize(Twitter.Status input, string query)
         {
             this.Input = input;
             this.Query = query;
+
+            this.Filters = new Hashtable();
+            this.Filters["text"] = new Filters.Text.Text(this.Input);
+            this.Filters["name"] = new Filters.Text.Name(this.Input);
+            this.Filters["screen_name"] = new Filters.Text.ScreenName(this.Input);
+            this.Filters["favorite_count"] = new Filters.Numerical.FavoriteCount(this.Input);
+
         }
 
         /// <summary>
@@ -265,19 +279,25 @@ namespace Twitch.Filter
 
             System.Diagnostics.Debug.WriteLine("# フィルタ " + filterId + " の引数は \"" + filterArg + "\" です。検証を開始します。");
 
-            switch (filterId) // フィルタに通す(作成中)
-            {
-                case "text":
-                    return new Filters.Text.Text(this.Input).Verify(filterArg, filterSymbol);
-                case "screen_name":
-                    return new Filters.Text.ScreenName(this.Input).Verify(filterArg, filterSymbol);
-                case "name":
-                    return new Filters.Text.Name(this.Input).Verify(filterArg, filterSymbol);
-                case "favorite_count":
-                    return new Filters.Numerical.FavoriteCount(this.Input).Verify(filterArg, filterSymbol);
-                default:
-                    throw new QueryException("フィルタが不適切です。ID \"" + filterId + "\" に一致するフィルタがありません。");
-            }
+            // Filterize
+            if (this.Filters.ContainsKey(filterId))
+                return ((IFilter)this.Filters[filterId]).Verify(filterArg, filterSymbol);
+            else
+                throw new QueryException("フィルタが不適切です。ID \"" + filterId + "\" に一致するフィルタがありません。");
+
+            //switch (filterId) // フィルタに通す(作成中)
+            //{
+            //    case "text":
+            //        return new Filters.Text.Text(this.Input).Verify(filterArg, filterSymbol);
+            //    case "screen_name":
+            //        return new Filters.Text.ScreenName(this.Input).Verify(filterArg, filterSymbol);
+            //    case "name":
+            //        return new Filters.Text.Name(this.Input).Verify(filterArg, filterSymbol);
+            //    case "favorite_count":
+            //        return new Filters.Numerical.FavoriteCount(this.Input).Verify(filterArg, filterSymbol);
+            //    default:
+            //        throw new QueryException("フィルタが不適切です。ID \"" + filterId + "\" に一致するフィルタがありません。");
+            //}
         }
     }
 }
