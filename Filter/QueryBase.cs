@@ -11,7 +11,7 @@ namespace Twitch.Filter
         /// <summary>
         /// このクエリに含まれるフィルタまたはフィルタ クラスタのコレクション
         /// </summary>
-        public IEnumerable<IFilterObject> Filters
+        public List<IFilterObject> Filters
         {
             get;
             set;
@@ -32,7 +32,13 @@ namespace Twitch.Filter
         /// <param name="o"></param>
         public void Add(IFilterObject o)
         {
-            this.Filters.ToList().Add(o);
+            if (this.Filters != null)
+                this.Filters.Add(o);
+            else
+            {
+                this.Filters = new List<IFilterObject>();
+                this.Filters.Add(o);
+            }
         }
 
         /// <summary>
@@ -43,24 +49,16 @@ namespace Twitch.Filter
         public bool Match(Twitter.Status status)
         {
             bool result = this.IsNegate;
+            LogicalOperator? opr = null;
+
+            if (this.Filters.Count == 1)
+                return this.Filters[0].Match(status);
 
             foreach (IFilterObject f in this.Filters)
             {
                 bool _result = f.Match(status);
 
-                //switch (this.Symbol)
-                //{
-                //    case Symbols.And: // and
-                //        result = (result && _result);
-                //        break;
-                //    case Symbols.Or: // or
-                //        result = (result || _result);
-                //        break;
-                //    case Symbols.Xor: // xor
-                //        result = (result ^ _result);
-                //        break;
-                //}
-                switch (f.Operator)
+                switch (opr)
                 {
                     case LogicalOperator.And: // and
                         result &= _result;
@@ -71,7 +69,12 @@ namespace Twitch.Filter
                     case LogicalOperator.Xor: // xor
                         result ^= _result;
                         break;
+                    default:
+                        result = _result;
+                        break;
                 }
+
+                opr = f.Operator;
             }
 
             return result;

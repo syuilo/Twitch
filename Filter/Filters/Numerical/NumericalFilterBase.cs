@@ -8,8 +8,6 @@ namespace Twitch.Filter
 {
     public abstract class NumericalFilterBase : Filter
     {
-        public NumericalFilterBase(Twitter.Status status) : base(status) { }
-
         public FilterType Type
         {
             get

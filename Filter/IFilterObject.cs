@@ -8,7 +8,7 @@ namespace Twitch.Filter
 {
     public interface IFilterObject
     {
-        LogicalOperator Operator
+        LogicalOperator? Operator
         {
             get;
             set;

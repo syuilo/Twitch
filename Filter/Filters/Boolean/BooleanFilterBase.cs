@@ -2,8 +2,6 @@
 {
     public abstract class BooleanFilterBase : Filter
     {
-        public BooleanFilterBase(Twitter.Status status) : base(status) { }
-
         public FilterType Type
         {
             get

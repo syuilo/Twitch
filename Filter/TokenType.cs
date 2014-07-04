@@ -23,9 +23,14 @@
         Exclamation,
 
         /// <summary>
-        /// リテラル(べた書き文字列,数値など)
+        /// 単一引用符
         /// </summary>
-        Literal,
+        SingleQuote,
+
+        /// <summary>
+        /// 二重引用符
+        /// </summary>
+        DoubleQuote,
 
         /// <summary>
         /// &amp;記号
@@ -53,11 +58,6 @@
         CloseBracket,
 
         /// <summary>
-        /// 文字列
-        /// </summary>
-        String,
-
-        /// <summary>
         /// 空白
         /// </summary>
         Space,
@@ -76,6 +76,11 @@
         /// ラインフィード
         /// </summary>
         LineFeed,
+
+        /// <summary>
+        /// エスケープ
+        /// </summary>
+        Escape,
 
         /// <summary>
         /// 不明(その他)

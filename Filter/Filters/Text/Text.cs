@@ -5,8 +5,6 @@
     /// </summary>
     public class Text : TextFilterBase, IFilter
     {
-        public Text(Twitter.Status status) : base(status) { }
-
         public string Identification
         {
             get
@@ -23,9 +21,22 @@
             }
         }
 
-        public bool Verify(string arg, string symbol)
+        public string Argument
         {
-            return this.Match(this.Input.Text, arg, symbol, this.Identification);
+        get;
+        set;
+        }
+
+        public Operator FilterOperator
+        {
+        get;
+        set;
+        }
+
+        public bool Match(Twitter.Status status)
+        {
+            return (status.Text.IndexOf(this.Argument) == -1) ? false : true;
+            //return this.Match(status.Text, arg, symbol, this.Identification);
         }
     }
 }

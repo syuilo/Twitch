@@ -7,17 +7,23 @@ using Twitch.Twitter;
 
 namespace Twitch.Filter
 {
-    public class Filter
+    public abstract class Filter
     {
-        public Status Input
+        public LogicalOperator? Operator
         {
             get;
             set;
         }
 
-        public Filter(Status status)
+        public Operator FilterOperator
         {
-            this.Input = status;
+            get;
+            set;
         }
+
+        //public bool Match(Twitter.Status status)
+        //{
+        //    return false;
+        //}
     }
 }

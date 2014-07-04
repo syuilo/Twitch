@@ -39,10 +39,10 @@ namespace Twitch.Filter
             this.Query = query;
 
             this.Filters = new Hashtable();
-            this.Filters["text"] = new Filters.Text.Text(this.Input);
-            this.Filters["name"] = new Filters.Text.Name(this.Input);
-            this.Filters["screen_name"] = new Filters.Text.ScreenName(this.Input);
-            this.Filters["favorite_count"] = new Filters.Numerical.FavoriteCount(this.Input);
+            //this.Filters["text"] = new Filters.Text.Text(this.Input);
+            //this.Filters["name"] = new Filters.Text.Name(this.Input);
+            //this.Filters["screen_name"] = new Filters.Text.ScreenName(this.Input);
+            //this.Filters["favorite_count"] = new Filters.Numerical.FavoriteCount(this.Input);
 
         }
 
@@ -279,11 +279,12 @@ namespace Twitch.Filter
 
             System.Diagnostics.Debug.WriteLine("# フィルタ " + filterId + " の引数は \"" + filterArg + "\" です。検証を開始します。");
 
-            // Filterize
-            if (this.Filters.ContainsKey(filterId))
-                return ((IFilter)this.Filters[filterId]).Verify(filterArg, filterSymbol);
-            else
-                throw new QueryException("フィルタが不適切です。ID \"" + filterId + "\" に一致するフィルタがありません。");
+            //// Filterize
+            //if (this.Filters.ContainsKey(filterId))
+            //    return ((IFilter)this.Filters[filterId]).Match(Input, filterArg, filterSymbol);
+            //else
+            return false;
+            //    throw new QueryException("フィルタが不適切です。ID \"" + filterId + "\" に一致するフィルタがありません。");
 
             //switch (filterId) // フィルタに通す(作成中)
             //{
