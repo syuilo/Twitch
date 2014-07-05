@@ -31,6 +31,11 @@
         {
             return this.Judge(status.Text, this.Argument, this.FilterOperator, this);
         }
+
+        public object GetValue(Twitter.Status status)
+        {
+            return status.Text;
+        }
     }
 }
 

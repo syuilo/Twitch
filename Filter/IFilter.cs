@@ -13,6 +13,6 @@ namespace Twitch.Filter
         FilterType Type { get; }
         Operator FilterOperator { get; set; }
         string Argument { get; set; }
-        bool Match(Twitter.Status status);
+        object GetValue(Twitter.Status status);
     }
 }

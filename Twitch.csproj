@@ -59,7 +59,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Filter\CalculationBase.cs" />
-    <Compile Include="Filter\CalculationCluster.cs" />
+    <Compile Include="Filter\Calculator.cs" />
     <Compile Include="Filter\CalculationException.cs" />
     <Compile Include="Filter\CalculationOperand.cs" />
     <Compile Include="Filter\CalculationOperandType.cs" />

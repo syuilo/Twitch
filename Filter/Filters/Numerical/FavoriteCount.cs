@@ -31,6 +31,11 @@
         {
             return this.Judge(status.FavoriteCount, double.Parse(this.Argument), this.FilterOperator, this);
         }
+
+        public object GetValue(Twitter.Status status)
+        {
+            return status.FavoriteCount;
+        }
     }
 }
 
