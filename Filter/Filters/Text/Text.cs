@@ -23,20 +23,13 @@
 
         public string Argument
         {
-        get;
-        set;
-        }
-
-        public Operator FilterOperator
-        {
-        get;
-        set;
+            get;
+            set;
         }
 
         public bool Match(Twitter.Status status)
         {
-            return (status.Text.IndexOf(this.Argument) == -1) ? false : true;
-            //return this.Match(status.Text, arg, symbol, this.Identification);
+            return this.Judge(status.Text, this.Argument, this.FilterOperator, this);
         }
     }
 }

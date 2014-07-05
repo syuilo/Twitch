@@ -48,14 +48,19 @@
         ConcatenatorXor,
 
         /// <summary>
-        /// (記号
+        /// {([記号
         /// </summary>
         OpenBracket,
 
         /// <summary>
-        /// )記号
+        /// })]記号
         /// </summary>
         CloseBracket,
+
+        /// <summary>
+        /// #シャープ
+        /// </summary>
+        Sharp,
 
         /// <summary>
         /// 空白

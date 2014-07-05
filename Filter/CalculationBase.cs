@@ -6,17 +6,17 @@ using System.Threading.Tasks;
 
 namespace Twitch.Filter
 {
-    public abstract class QueryBase
+    public abstract class CalculationBase
     {
-        public QueryBase()
+        public CalculationBase()
         {
-            this.Filters = new List<IFilterObject>();
+            this.Operands = new List<CalculationOperand>();
         }
 
         /// <summary>
-        /// このクエリに含まれるフィルタまたはフィルタ クラスタのコレクション
+        /// このサーキュレータに含まれるオペランド
         /// </summary>
-        public List<IFilterObject> Filters
+        public List<CalculationOperand> Operands
         {
             get;
             set;
@@ -35,9 +35,9 @@ namespace Twitch.Filter
         /// このクエリにフィルタまたはフィルタ クラスタを追加します。
         /// </summary>
         /// <param name="o"></param>
-        public void Add(IFilterObject o)
+        public void Add(CalculationOperand o)
         {
-            this.Filters.Add(o);
+            this.Operands.Add(o);
         }
 
         /// <summary>
@@ -45,22 +45,19 @@ namespace Twitch.Filter
         /// </summary>
         /// <param name="status"></param>
         /// <returns>検証結果</returns>
-        public bool Match(Twitter.Status status)
+        public int Calculation(Twitter.Status status)
         {
             bool result = this.IsNegate;
             LogicalOperator? opr = null;
 
-            switch (this.Filters.Count)
+            switch (this.Operands.Count)
             {
                 case 0:
-                    return !this.IsNegate;
+                    throw new CalculationException("サーキュレータにオペランドがありません。");
                 case 1:
-                    if (!this.IsNegate)
-                        return this.Filters[0].Match(status);
-                    else
-                        return !this.Filters[0].Match(status);
+                    throw new CalculationException("サーキュレータにオペランドが1つしかありません。計算を行うには、最低でも2つのオペランドが必要です。");
                 default:
-                    foreach (IFilterObject f in this.Filters)
+                    foreach (IFilterObject f in this.Operands)
                     {
                         bool _result = f.Match(status);
 
@@ -84,7 +81,7 @@ namespace Twitch.Filter
                         opr = f.Operator;
                     }
 
-                    return result;
+                    return 100;
             }
         }
     }

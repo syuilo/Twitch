@@ -58,6 +58,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Filter\CalculationBase.cs" />
+    <Compile Include="Filter\CalculationCluster.cs" />
+    <Compile Include="Filter\CalculationException.cs" />
+    <Compile Include="Filter\CalculationOperand.cs" />
+    <Compile Include="Filter\CalculationOperandType.cs" />
+    <Compile Include="Filter\CalculationOperator.cs" />
     <Compile Include="Filter\Core\CompileException.cs" />
     <Compile Include="Filter\Core\Compiler.cs" />
     <Compile Include="Filter\Core\Filterizer.cs" />
@@ -89,6 +95,7 @@
     <Compile Include="Filter\IFilter.cs" />
     <Compile Include="Filter\Filters\Numerical\NumericalFilterBase.cs" />
     <Compile Include="Filter\IFilterObject.cs" />
+    <Compile Include="Filter\IOperand.cs" />
     <Compile Include="Filter\Object.cs" />
     <Compile Include="Filter\Query.cs" />
     <Compile Include="Filter\QueryBase.cs" />

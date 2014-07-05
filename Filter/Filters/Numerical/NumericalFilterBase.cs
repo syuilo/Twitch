@@ -16,36 +16,28 @@ namespace Twitch.Filter
             }
         }
 
-        public bool Match(double input, double arg, string symbol, string id)
+        protected bool Judge(double target, double arg, Operator filterOperator, IFilter f)
         {
-            switch (symbol)
+            switch (filterOperator)
             {
-                // :  PにQが含まれているか
-                // ::  PにQを正規表現として検証した結果
-                // ==  PとQが等しいか
-                // !=  PとQが等しくないか
-                // > PがQより大きいか
-                // < PがQより小さいか
-                // >= PがQより大きいかまたは等しいか
-                // <= PがQより小さいかまたは等しいか
-                case ":":
-                    return input.ToString().IndexOf(arg.ToString()) > -1;
-                case "::":
-                    return System.Text.RegularExpressions.Regex.IsMatch(input.ToString(), arg.ToString());
-                case "==":
-                    return input == arg;
-                case "!=":
-                    return input != arg;
-                case ">":
-                    return input > arg;
-                case "<":
-                    return input < arg;
-                case ">=":
-                    return input >= arg;
-                case "<=":
-                    return input <= arg;
+                case Twitch.Filter.Operator.Include:
+                    return target.ToString().IndexOf(arg.ToString()) > -1;
+                case Twitch.Filter.Operator.Regex:
+                    return System.Text.RegularExpressions.Regex.IsMatch(target.ToString(), arg.ToString());
+                case Twitch.Filter.Operator.Equal:
+                    return target == arg;
+                case Twitch.Filter.Operator.Unequal:
+                    return target != arg;
+                case Twitch.Filter.Operator.GreaterThan:
+                    return target > arg;
+                case Twitch.Filter.Operator.LessThan:
+                    return target < arg;
+                case Twitch.Filter.Operator.GreaterThanOrEqual:
+                    return target >= arg;
+                case Twitch.Filter.Operator.LessThanOrEqual:
+                    return target <= arg;
                 default:
-                    throw new FilterException("演算子 " + symbol + " はフィルター " + id + " に対して有効ではありません。");
+                    throw new FilterException("演算子 " + filterOperator + " はフィルター " + f.Identification + " のフィルタ タイプ " + f.Type + " に対して有効ではありません。");
             }
         }
     }
