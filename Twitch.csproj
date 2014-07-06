@@ -11,10 +11,14 @@
     <AssemblyName>Twitch</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <SccProjectName>SAK</SccProjectName>
-    <SccLocalPath>SAK</SccLocalPath>
-    <SccAuxPath>SAK</SccAuxPath>
-    <SccProvider>SAK</SccProvider>
+    <SccProjectName>
+    </SccProjectName>
+    <SccLocalPath>
+    </SccLocalPath>
+    <SccAuxPath>
+    </SccAuxPath>
+    <SccProvider>
+    </SccProvider>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -58,12 +62,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Filter\CalculationBase.cs" />
-    <Compile Include="Filter\Calculator.cs" />
-    <Compile Include="Filter\CalculationException.cs" />
-    <Compile Include="Filter\CalculationOperand.cs" />
-    <Compile Include="Filter\CalculationOperandType.cs" />
-    <Compile Include="Filter\CalculationOperator.cs" />
+    <Compile Include="Filter\Calculator\Calculator.cs" />
+    <Compile Include="Filter\Calculator\CalculationException.cs" />
+    <Compile Include="Filter\Calculator\CalculationOperand.cs" />
+    <Compile Include="Filter\Calculator\CalculationOperandType.cs" />
+    <Compile Include="Filter\Calculator\Arithmetic.cs" />
     <Compile Include="Filter\Core\CompileException.cs" />
     <Compile Include="Filter\Core\Compiler.cs" />
     <Compile Include="Filter\Core\Filterizer.cs" />
@@ -86,7 +89,6 @@
     <Compile Include="Filter\Filters\Text\Description.cs" />
     <Compile Include="Filter\Filters\Text\Location.cs" />
     <Compile Include="Filter\Filters\Text\Name.cs" />
-    <Compile Include="Filter\Filters\Text\Profile.cs" />
     <Compile Include="Filter\Filters\Text\ScreenName.cs" />
     <Compile Include="Filter\Filters\Text\Source.cs" />
     <Compile Include="Filter\Filters\Text\Text.cs" />

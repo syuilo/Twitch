@@ -1,12 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Twitch.Filter.Filters.Boolean
+﻿namespace Twitch.Filter.Filters.Boolean
 {
-    class Retweeted
+    /// <summary>
+    /// リツイートしているかどうかをフィルタします。
+    /// </summary>
+    public class Retweeted : BooleanFilterBase, IFilter
     {
+        public string Identification { get { return "retweeted"; } }
+        public string Description { get { return "リツイートしているか"; } }
+        public string Argument { get; set; }
+
+        public object GetValue(Twitter.Status status) { return status.FavoriteCount; }
+        public bool Match(Twitter.Status status) { return this.Judge((bool)this.GetValue(status), bool.Parse(this.Argument), this.FilterOperator, this); }
     }
 }

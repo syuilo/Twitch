@@ -14,7 +14,7 @@ namespace Twitch.Filter
             set;
         }
 
-        public CalculationOperator? CalcOperator
+        public Arithmetic? CalcOperator
         {
             get;
             set;

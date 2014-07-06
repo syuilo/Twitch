@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace Twitch.Filter
 {
     /// <summary>
-    /// サーキュレータはフィルタの一種
+    /// カルキュレータはフィルタの一種
     /// </summary>
     public class Calculator : NumericalFilterBase, IFilter
     {
@@ -17,7 +17,7 @@ namespace Twitch.Filter
         }
 
         /// <summary>
-        /// このサーキュレータに含まれるオペランド
+        /// このカルキュレータに含まれるオペランド
         /// </summary>
         public List<CalculationOperand> Operands
         {
@@ -35,7 +35,7 @@ namespace Twitch.Filter
         }
 
         /// <summary>
-        /// このサーキュレータにオペランドを追加します。
+        /// このカルキュレータにオペランドを追加します。
         /// </summary>
         /// <param name="o"></param>
         public void Add(CalculationOperand o)
@@ -74,7 +74,15 @@ namespace Twitch.Filter
         public bool Match(Twitter.Status status)
         {
             double value = 0;
-            CalculationOperator? opr = CalculationOperator.Plus;
+            Arithmetic? opr = Arithmetic.Addition;
+
+            switch (this.Operands.Count)
+            {
+                case 0:
+                    throw new CalculationException("カルキュレータにオペランドがありません。");
+                case 1:
+                    throw new CalculationException("カルキュレータにオペランドが1つしかありません。計算を行うには、最低でも2つのオペランドが必要です。");
+            }
 
             foreach (CalculationOperand o in this.Operands)
             {
@@ -92,11 +100,21 @@ namespace Twitch.Filter
 
                 switch (opr)
                 {
-                    case CalculationOperator.Plus:
+                    // 加算
+                    case Arithmetic.Addition:
                         value += _value;
                         break;
-                    case CalculationOperator.Minus:
+                    // 減算
+                    case Arithmetic.Subtraction:
                         value -= _value;
+                        break;
+                    // 乗算
+                    case Arithmetic.Multiplication:
+                        value *= _value;
+                        break;
+                    // 除算
+                    case Arithmetic.Division:
+                        value /= _value;
                         break;
                 }
 

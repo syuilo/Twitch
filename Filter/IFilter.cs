@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace Twitch.Filter
 {
+    /// <summary>
+    /// フィルタが実装しなければならないインターフェイスです。
+    /// </summary>
     public interface IFilter : IFilterObject
     {
         string Identification { get; }

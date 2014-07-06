@@ -10,18 +10,16 @@
             }
         }
 
-        public bool Match(bool input, bool arg, string symbol, string id)
+        protected bool Judge(bool target, bool arg, Operator filterOperator, IFilter f)
         {
-            switch (symbol)
+            switch (filterOperator)
             {
-                // ==  PとQが等しいか
-                // !=  PとQが等しくないか
-                case "==":
-                    return input == arg;
-                case "!=":
-                    return input != arg;
+                case Twitch.Filter.Operator.Equal:
+                    return target == arg;
+                case Twitch.Filter.Operator.Unequal:
+                    return target != arg;
                 default:
-                    throw new FilterException("演算子 " + symbol + " はフィルター " + id + " に対して有効ではありません。");
+                    throw new FilterException("演算子 " + filterOperator + " はフィルター " + f.Identification + " のフィルタ タイプ " + f.Type + " に対して有効ではありません。");
             }
         }
     }

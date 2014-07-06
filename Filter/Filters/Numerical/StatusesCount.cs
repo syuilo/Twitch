@@ -1,12 +1,27 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Twitch.Filter.Filters.Numerical
+﻿namespace Twitch.Filter.Filters.Numerical
 {
-    class StatusesCount
+    /// <summary>
+    /// ツイート数をフィルタします。
+    /// </summary>
+    public class StatusesCount : NumericalFilterBase, IFilter
     {
+        public string Identification { get { return "statuses_count"; } }
+        public string Description { get { return "ツイート数"; } }
+
+        public string Argument
+        {
+            get;
+            set;
+        }
+
+        public bool Match(Twitter.Status status)
+        {
+            return this.Judge((double)status.User.StatusesCount, double.Parse(this.Argument), this.FilterOperator, this);
+        }
+
+        public object GetValue(Twitter.Status status)
+        {
+            return (double)status.User.StatusesCount;
+        }
     }
 }

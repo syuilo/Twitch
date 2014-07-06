@@ -8,7 +8,7 @@ namespace Twitch.Filter
 {
     public interface IOperand
     {
-        CalculationOperator? CalcOperator
+        Arithmetic? CalcOperator
         {
             get;
             set;

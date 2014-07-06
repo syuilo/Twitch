@@ -1,33 +1,15 @@
 ﻿namespace Twitch.Filter.Filters.Text
 {
-    ///// <summary>
-    ///// ユーザー名をフィルタします。
-    ///// </summary>
-    //public class Name : TextFilterBase, IFilter
-    //{
-    //    public Name(Twitter.Status status) : base(status) { }
+    /// <summary>
+    /// ユーザー名をフィルタします。
+    /// </summary>
+    public class Name : TextFilterBase, IFilter
+    {
+        public string Identification { get { return "name"; } }
+        public string Description { get { return "ユーザー名"; } }
+        public string Argument { get; set; }
 
-    //    public string Identification
-    //    {
-    //        get
-    //        {
-    //            return "name";
-    //        }
-    //    }
-
-    //    public string Description
-    //    {
-    //        get
-    //        {
-    //            return "ユーザー名";
-    //        }
-    //    }
-
-    //    public bool Verify(string arg, string symbol)
-    //    {
-    //        return this.Match(this.Input.User.Name, arg, symbol, this.Identification);
-    //    }
-    //}
+        public object GetValue(Twitter.Status status) { return status.User.Name; }
+        public bool Match(Twitter.Status status) { return this.Judge((string)this.GetValue(status), this.Argument, this.FilterOperator, this); }
+    }
 }
-
-

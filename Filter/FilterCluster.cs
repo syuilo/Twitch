@@ -46,8 +46,8 @@ namespace Twitch.Filter
         //                        result = (a ^ b);
         //                        break;
         //                }
-                    
-                
+
+
         //    }
         //        return result;
         //}

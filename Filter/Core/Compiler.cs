@@ -2,9 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 
 namespace Twitch.Filter.Core
 {
@@ -48,7 +46,7 @@ namespace Twitch.Filter.Core
         public static void Next()
         {
             if (cursor + 1 >= query.Length)
-                throw new CompileException("これ以上進められません。");
+                throw new CompileException("カーソルは既に終端です。これ以上進められません。");
             else
                 cursor++;
         }
@@ -75,9 +73,11 @@ namespace Twitch.Filter.Core
 
         #endregion
 
+        #region Token
+
         public static TokenType Tokenize()
         {
-            switch (query[cursor])
+            switch (ReadChar())
             {
                 case ' ':
                     return TokenType.Space;
@@ -152,6 +152,39 @@ namespace Twitch.Filter.Core
             }
         }
 
+        public static Arithmetic GetArithmetic()
+        {
+            switch (ReadChar())
+            {
+                case '+':
+                    return Arithmetic.Addition;
+                case '-':
+                    return Arithmetic.Subtraction;
+                case '*':
+                    return Arithmetic.Multiplication;
+                case '/':
+                    return Arithmetic.Division;
+
+                default:
+                    throw new QueryException("不明な算術演算子 " + ReadChar() + " です。");
+            }
+        }
+
+        #endregion
+
+        public static List<IFilter> Filters = new List<IFilter>()
+        {
+
+            new Filters.Numerical.FavoriteCount(),
+            //            new Filters.Numerical.FollowersCount(),
+            //new Filters.Numerical.FriendsCount(),
+            //new Filters.Numerical.ListedCount(),
+            //new Filters.Numerical.RetweetCount(),
+            new Filters.Numerical.StatusesCount(),
+
+            new Filters.Text.Text()
+        };
+
         /// <summary>
         /// 与えられたクエリ文字列を元にQueryオブジェクトを生成します。
         /// </summary>
@@ -187,9 +220,7 @@ namespace Twitch.Filter.Core
                 }
             }
 
-            throw new QueryException("");
-
-            //return q;
+            throw new QueryException("pppppppp");
         }
 
         /// <summary>
@@ -202,6 +233,8 @@ namespace Twitch.Filter.Core
             return "";
         }
 
+        #region Filter
+
         /// <summary>
         /// フィルタ クラスタを走査し、構築します。
         /// </summary>
@@ -213,10 +246,10 @@ namespace Twitch.Filter.Core
             bool endPoint = false;
             while (!endPoint)
             {
-                Next();
-
-                if (cursor >= query.Length)
+                if (cursor + 1 >= query.Length)
                     throw new QueryException("クエリが不適切です。オブジェクトが終了していません。");
+
+                Next();
 
                 switch (Tokenize())
                 {
@@ -231,7 +264,6 @@ namespace Twitch.Filter.Core
                         break;
 
                     case TokenType.OpenBracket:
-                    Console.WriteLine("#######");
                         var childCluster = AnalyzeCluster();
                         childCluster.Parent = cluster;
                         cluster.Add(childCluster);
@@ -267,134 +299,8 @@ namespace Twitch.Filter.Core
                         break;
                 }
             }
+
             return cluster;
-        }
-
-        /// <summary>
-        /// サーキュレータを走査し、構築します。
-        /// </summary>
-        /// <returns>サーキュレータ</returns>
-        private static Calculator AnalyzeCalculator()
-        {
-            var calculator = new Calculator();
-
-            bool endPoint = false;
-            while (!endPoint)
-            {
-                Next();
-
-                if (cursor >= query.Length)
-                    throw new QueryException("サーキュレータが終了していません。");
-
-                switch (Tokenize())
-                {
-                    // 無視する文字
-                    case TokenType.Space:
-                        break;
-                    case TokenType.Tab:
-                        break;
-                    case TokenType.CarriageReturn:
-                        break;
-                    case TokenType.LineFeed:
-                        break;
-
-                    case TokenType.OpenBracket:
-                        break;
-                    case TokenType.CloseBracket:
-                        endPoint = true;
-                        break;
-
-                    default:
-                        calculator.Add(AnalyzeOperand());
-                        Back();
-                        break;
-                }
-            }
-
-            //Back();
-
-           Console.WriteLine("### " + ReadChar()+ " ###");
-
-            calculator.FilterOperator = GetFilterOperator("#calc");
-            calculator.Argument = GetFilterArgument("#calc");
-            calculator.Operator = GetLogicalOperator();
-
-            return calculator;
-        }
-
-        /// <summary>
-        /// サーキュレータのオペランドを走査します。
-        /// </summary>
-        /// <returns>サーキュレータのオペランド</returns>
-        private static CalculationOperand AnalyzeOperand()
-        {
-            var operand = new object();
-            string filterId = String.Empty;
-            string literal = String.Empty;
-            CalculationOperator? copr = null;
-
-            bool end = false;
-            while (!end)
-            {
-                switch (Tokenize())
-                {
-                    case TokenType.Space:
-                        break;
-                    case TokenType.CloseBracket:
-                        Back();
-                        end = true;
-                        break;
-                    default:
-                        if (Regex.IsMatch(ReadChar().ToString(), "[a-z A-Z _]"))
-                            filterId += ReadChar();
-                        else if (Regex.IsMatch(ReadChar().ToString(), "[0-9]"))
-                            literal += ReadChar();
-                        else
-                        {
-                            // オペランドの演算子
-                            switch (ReadChar())
-                            {
-                                case '+':
-                                    copr = CalculationOperator.Plus;
-                                    break;
-                                case '-':
-                                    copr = CalculationOperator.Minus;
-                                    break;
-                            }
-                            end = true;
-                        }
-                        break;
-                }
-
-                Next();
-            }
-
-            if (string.IsNullOrEmpty(literal) & (!string.IsNullOrEmpty(filterId)))
-            {
-                operand = GetFilterFromId(filterId);
-
-                // 数値以外のフィルタは使えない
-                if (((IFilter)operand).Type != FilterType.Numerical)
-                    throw new QueryException("フィルタ " + filterId + " のフィルタ タイプ " + ((IFilter)operand).Type + " をサーキュレータのオペランドとして使用することはできません。サーキュレータのオペランドとして使用できるのは、 Numerical タイプのフィルタだけです。");
-
-                // オペランドとしてのフィルタ
-                return new CalculationOperand()
-                {
-                    Type = CalculationOperandType.Filter,
-                    Value = (IFilter)operand,
-                    CalcOperator = copr
-                };
-            }
-            else if (string.IsNullOrEmpty(filterId))
-                // リテラル
-                return new CalculationOperand()
-                {
-                    Type = CalculationOperandType.Literal,
-                    Value = literal,
-                    CalcOperator = copr
-                };
-
-            return null;
         }
 
         /// <summary>
@@ -412,10 +318,10 @@ namespace Twitch.Filter.Core
 
             while (!findId)
             {
-                Next();
-
-                if (cursor > query.Length)
+                if (cursor + 1 > query.Length)
                     throw new QueryException("クエリが不適切です。フィルタ " + filterId + " が終了していません。");
+
+                Next();
 
                 switch (Tokenize())
                 {
@@ -443,46 +349,6 @@ namespace Twitch.Filter.Core
             return (IFilterObject)filter;
         }
 
-        private static LogicalOperator GetLogicalOperator()
-        {
-            var opr = new LogicalOperator();
-
-            bool findOpr = false;
-            while (!findOpr)
-            {
-                Next();
-
-                switch (Tokenize())
-                {
-                    case TokenType.Space:
-                        break;
-
-                    case TokenType.CloseBracket:
-                        findOpr = true;
-                        break;
-
-                    case TokenType.ConcatenatorAnd:
-                        opr = LogicalOperator.And;
-                        findOpr = true;
-                        break;
-                    case TokenType.ConcatenatorOr:
-                        opr = LogicalOperator.Or;
-                        findOpr = true;
-                        break;
-                    case TokenType.ConcatenatorXor:
-                        opr = LogicalOperator.Xor;
-                        findOpr = true;
-                        break;
-                    default:
-                        Console.WriteLine(ReadChar());
-                        break;
-                }
-            }
-
-            Back();
-            return opr;
-        }
-
         /// <summary>
         /// フィルタの引数を走査し、取得します。
         /// </summary>
@@ -490,12 +356,14 @@ namespace Twitch.Filter.Core
         /// <returns>引数</returns>
         private static string GetFilterArgument(string filterId)
         {
-        Console.WriteLine("***********" + filterId);
             string filterArg = String.Empty;
             int dcCount = 0;
             bool findArg = false;
             while (!findArg)
             {
+                if (cursor + 1 > query.Length)
+                    throw new QueryException("クエリが不適切です。フィルタ " + filterId + " が終了していません。");
+
                 Next();
 
                 switch (Tokenize())
@@ -556,10 +424,10 @@ namespace Twitch.Filter.Core
 
             while (!findSymbol)
             {
-                Next();
-
-                if (cursor >= query.Length)
+                if (cursor + 1 > query.Length)
                     throw new QueryException("クエリが不適切です。フィルタ " + filterId + " が終了していません。");
+
+                Next();
 
                 switch (Tokenize())
                 {
@@ -592,6 +460,163 @@ namespace Twitch.Filter.Core
         }
 
         /// <summary>
+        /// カルキュレータを走査し、構築します。
+        /// </summary>
+        /// <returns>カルキュレータ</returns>
+        private static Calculator AnalyzeCalculator()
+        {
+            var calculator = new Calculator();
+
+            bool endPoint = false;
+            while (!endPoint)
+            {
+                if (cursor + 2 >= query.Length)
+                    throw new QueryException("カルキュレータが終了していません。");
+
+                Next();
+
+                switch (Tokenize())
+                {
+                    // 無視する文字
+                    case TokenType.Space:
+                        break;
+                    case TokenType.Tab:
+                        break;
+                    case TokenType.CarriageReturn:
+                        break;
+                    case TokenType.LineFeed:
+                        break;
+
+                    case TokenType.OpenBracket:
+                        break;
+                    case TokenType.CloseBracket:
+                        endPoint = true;
+                        break;
+
+                    default:
+                        calculator.Add(AnalyzeOperand());
+                        Back();
+                        break;
+                }
+            }
+
+            calculator.FilterOperator = GetFilterOperator("#calc");
+            calculator.Argument = GetFilterArgument("#calc");
+            calculator.Operator = GetLogicalOperator();
+
+            return calculator;
+        }
+
+        /// <summary>
+        /// カルキュレータのオペランドを走査します。
+        /// </summary>
+        /// <returns>カルキュレータのオペランド</returns>
+        private static CalculationOperand AnalyzeOperand()
+        {
+            var operand = new object();
+            string filterId = String.Empty;
+            string literal = String.Empty;
+            Arithmetic? copr = null;
+
+            bool end = false;
+            while (!end)
+            {
+                switch (Tokenize())
+                {
+                    case TokenType.Space:
+                        break;
+                    case TokenType.CloseBracket:
+                        Back();
+                        end = true;
+                        break;
+                    default:
+                        if (Regex.IsMatch(ReadChar().ToString(), "[a-z A-Z _]"))
+                            filterId += ReadChar();
+                        else if (Regex.IsMatch(ReadChar().ToString(), "[0-9]"))
+                            literal += ReadChar();
+                        else
+                        {
+                            // オペランドの演算子
+                            copr = GetArithmetic();
+                            end = true;
+                        }
+                        break;
+                }
+
+                Next();
+            }
+
+            if (string.IsNullOrEmpty(literal) & (!string.IsNullOrEmpty(filterId)))
+            {
+                operand = GetFilterFromId(filterId);
+
+                // 数値以外のフィルタは使えない
+                if (((IFilter)operand).Type != FilterType.Numerical)
+                    throw new QueryException("フィルタ " + filterId + " のフィルタ タイプ " + ((IFilter)operand).Type + " をカルキュレータのオペランドとして使用することはできません。カルキュレータのオペランドとして使用できるのは、 Numerical タイプのフィルタだけです。");
+
+                // オペランドとしてのフィルタ
+                return new CalculationOperand()
+                {
+                    Type = CalculationOperandType.Filter,
+                    Value = (IFilter)operand,
+                    CalcOperator = copr
+                };
+            }
+            else if (string.IsNullOrEmpty(filterId))
+                // リテラル
+                return new CalculationOperand()
+                {
+                    Type = CalculationOperandType.Literal,
+                    Value = literal,
+                    CalcOperator = copr
+                };
+
+            return null;
+        }
+
+        #endregion
+
+        private static LogicalOperator GetLogicalOperator()
+        {
+            var opr = new LogicalOperator();
+
+            bool findOpr = false;
+            while (!findOpr)
+            {
+                Next();
+
+                switch (Tokenize())
+                {
+                    case TokenType.Space:
+                        break;
+
+                    case TokenType.CloseBracket:
+                        findOpr = true;
+                        break;
+
+                    case TokenType.ConcatenatorAnd:
+                        opr = LogicalOperator.And;
+                        findOpr = true;
+                        break;
+                    case TokenType.ConcatenatorOr:
+                        opr = LogicalOperator.Or;
+                        findOpr = true;
+                        break;
+                    case TokenType.ConcatenatorXor:
+                        opr = LogicalOperator.Xor;
+                        findOpr = true;
+                        break;
+                    default:
+                        Console.WriteLine(ReadChar());
+                        break;
+                }
+            }
+
+            Back();
+            return opr;
+        }
+
+        /// <summary>
         /// 与えられたIDに合致するフィルタを取得します。
         /// IDに合致するフィルタが存在しなかった場合はクエリ エラーとなります。
         /// </summary>
@@ -599,22 +624,24 @@ namespace Twitch.Filter.Core
         /// <returns>フィルタ</returns>
         public static IFilter GetFilterFromId(string filterId)
         {
-            switch (filterId)
+            try
             {
-                case "text":
-                    return new Filters.Text.Text();
-                case "favorite_count":
-                    return new Filters.Numerical.FavoriteCount();
+                var filter = from f in Filters
+                             where f.Identification == filterId
+                             select f;
 
-                default:
-                    throw new QueryException("フィルタが不適切です。ID \"" + filterId + "\" に一致するフィルタがありません。");
+                return filter.First();
+            }
+            catch (System.InvalidOperationException)
+            {
+                throw new QueryException("フィルタが不適切です。ID \"" + filterId + "\" に一致するフィルタがありません。");
             }
         }
 
         /// <summary>
         /// 
         /// </summary>
-        public static void Optimization()
+        public static void Optimization(Query query)
         {
 
         }
