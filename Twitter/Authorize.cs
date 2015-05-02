@@ -173,5 +173,25 @@ namespace Twitch.Twitter
             else
                 return null;
         }
+        
+        /// <summary>
+        /// xAuthによってAccessToken,AccessTokenSecretを取得します。これはxAuthが許可されたトークンでのみ使用する事が出来ます。
+        /// </summary>s
+        /// <returns>TwitterContext。失敗した場合はNull</returns>
+        public async Task<TwitterContext> GetAccessTokenFromXAuth(string ScreenName, string Password)
+        {
+            var tw = new Twitch.TwitterContext(this.ConsumerKey, this.ConsumerSecret);
+            string res = await Twitch.Twitter.APIs.REST.Oauth.AccessToken(tw, ScreenName, Password);
+
+            if (!string.IsNullOrEmpty(res))
+            {
+                string access_token = Utility.AnalyzeUrlQuery.Analyze(res, "oauth_token");
+                string access_token_secret = Utility.AnalyzeUrlQuery.Analyze(res, "oauth_token_secret");
+
+                return new Twitch.TwitterContext(this.ConsumerKey, this.ConsumerSecret, access_token, access_token_secret);
+            }
+            else
+                return null;
+        }
     }
 }
