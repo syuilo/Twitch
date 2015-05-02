@@ -25,6 +25,16 @@ namespace Twitch.Twitter.APIs.REST
 
             return await new TwitterRequest(twitterContext, API.Methods.POST, new Uri(API.Urls.Oauth_AccessToken), query).Request();
 		}
+		
+		public static async Task<string> AccessToken(TwitterContext twitterContext, string x_auth_username, string x_auth_password)
+		{
+			StringDictionary query = new StringDictionary();
+			query["x_auth_username"] = x_auth_username;
+			query["x_auth_password"] = x_auth_password;
+			query["x_auth_mode"] = "client_auth";
+
+            return await new TwitterRequest(twitterContext, API.Methods.POST, new Uri(API.Urls.Oauth_AccessToken), query).Request();
+		}
 
 		public static async Task<string> RequestToken(TwitterContext twitterContext)
 		{
