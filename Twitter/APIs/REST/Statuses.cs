@@ -154,7 +154,6 @@ namespace Twitch.Twitter.APIs.REST
         /// <param name="twitterContext">自分。</param>
         /// <param name="status">本文。</param>
         /// <param name="in_reply_to_status_id">返信元になるツイートのID。</param>
-        /// <param name="media"></param>
         /// <returns></returns>
         public static async Task<string> Update(TwitterContext twitterContext,
             string status,

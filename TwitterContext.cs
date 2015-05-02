@@ -138,7 +138,7 @@ namespace Twitch
         /// <summary>
         /// このTwitterContextからツイートを行います。
         /// </summary>
-        /// <param name="id"></param>
+        /// <param name="status"></param>
         /// <returns></returns>
         public async Task<bool> Tweet(string status)
         {
